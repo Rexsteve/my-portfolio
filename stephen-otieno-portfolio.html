@@ -1,0 +1,2552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stephen Otieno — UI/UX Designer & Frontend Developer. Computer Science student at Maseno University crafting digital experiences where design meets engineering." />
+  <title>Stephen Otieno — UI/UX Designer & Frontend Developer</title>
+
+  <!-- ── FONTS ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700;1,900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- ── GSAP CDN ── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js" defer></script>
+
+  <style>
+    /* ════════════════════════════════════════════════════
+       DESIGN TOKENS
+       Palette: editorial ink, aged newsprint, tarnished
+       gold, blood red, warm stone
+    ════════════════════════════════════════════════════ */
+    :root {
+      --ink:        #0A0A0F;     /* deep editorial black  */
+      --newsprint:  #F2EDD7;     /* aged newsprint cream  */
+      --gold:       #C9A84C;     /* tarnished gold accent */
+      --crimson:    #8B1A1A;     /* editorial red mark    */
+      --stone:      #9E9585;     /* warm stone mid-tone   */
+      --smoke:      #E8E3D3;     /* light newsprint       */
+      --charcoal:   #2A2A35;     /* dark secondary        */
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'EB Garamond', Georgia, serif;
+      --font-mono:    'Space Mono', 'Courier New', monospace;
+
+      --ease-silk:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-expo:  cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    /* ── SCROLL PADDING — Offset fixed nav so anchor links land correctly ── */
+    /* The fixed nav is ~72px tall; scroll-padding-top ensures headings are
+       never hidden behind it when following a hash link.                     */
+
+    /* ── MOBILE NAV HAMBURGER ── */
+    /* On small screens the full nav-links are hidden; a hamburger button
+       replaces them. JS toggles the .nav-open class on <body> to reveal
+       the mobile menu overlay.                                               */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: none;
+      padding: 6px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--newsprint);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    /* Animate hamburger bars into an X when menu is open */
+    body.nav-open .nav-hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    body.nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    body.nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* Mobile dropdown overlay — sits above everything.
+       Shown when <body> has class .nav-open (added by JS hamburger toggle) */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    /* body.nav-open shows the overlay */
+    body.nav-open .nav-mobile-menu { display: flex; }
+    /* Prevent page scroll while mobile menu is open */
+    body.nav-open { overflow: hidden; }
+    .nav-mobile-menu a {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-weight: 700;
+      color: var(--newsprint);
+      text-decoration: none;
+      opacity: 0.85;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-mobile-menu a:hover { opacity: 1; color: var(--gold); }
+
+
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px; /* offset for fixed nav — keeps headings from hiding behind it */
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: var(--ink);
+      color: var(--newsprint);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none; /* custom cursor — overridden to 'auto' on touch via JS */
+    }
+
+    /* On touch devices we restore the default cursor (JS adds .touch-device to body) */
+    body.touch-device,
+    body.touch-device * { cursor: auto !important; }
+    body.touch-device .cursor,
+    body.touch-device .cursor-ring { display: none; }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s var(--ease-silk), width 0.3s, height 0.3s, background 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s var(--ease-silk), width 0.3s, height 0.3s, opacity 0.3s;
+      opacity: 0.5;
+    }
+    .cursor-ring.hovering { width: 60px; height: 60px; opacity: 0.8; }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      mix-blend-mode: difference;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--newsprint);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--newsprint);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    /* ══════════════════════════════════════════════════
+       § 1  HERO
+    ══════════════════════════════════════════════════ */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Noise texture overlay for print feel */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Vignette */
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(10,10,15,0.7) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Portrait photograph — placeholder uses a CSS-art portrait silhouette */
+    .hero-portrait {
+      position: absolute;
+      right: 8%;
+      bottom: 0;
+      width: 42vw;
+      max-width: 600px;
+      height: 90%;
+      z-index: 1;
+      will-change: transform;
+      overflow: hidden;
+    }
+
+    /* CSS art portrait — elegant silhouette with gradients */
+    .hero-portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      filter: grayscale(20%) contrast(1.05);
+    }
+
+    /* Portrait placeholder when no real image */
+    .portrait-placeholder {
+      width: 100%;
+      height: 100%;
+      background:
+        /* shirt / collar */
+        radial-gradient(ellipse 45% 12% at 50% 78%, #2a2a35 0%, transparent 100%),
+        /* neck */
+        radial-gradient(ellipse 12% 10% at 50% 66%, #5a4a3a 0%, transparent 100%),
+        /* head */
+        radial-gradient(ellipse 30% 28% at 50% 44%, #7a6050 0%, #5a4030 60%, transparent 100%),
+        /* shoulders */
+        radial-gradient(ellipse 70% 30% at 50% 90%, #1a1a25 0%, transparent 100%),
+        /* background gradient */
+        linear-gradient(180deg, transparent 30%, rgba(10,10,15,0.8) 100%);
+      position: relative;
+    }
+
+    .portrait-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--ink) 0%, transparent 25%, transparent 75%, var(--ink) 100%);
+    }
+
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.04;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 4;
+      width: 100%;
+      max-width: 1400px;
+      padding: 0 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+
+    .hero-text { position: relative; }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(4rem, 9vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--newsprint);
+      overflow: hidden;
+    }
+
+    /* Each word on its own line, staggered reveal */
+    .hero-name .word {
+      display: block;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .hero-name .word span {
+      display: block;
+      transform: translateY(110%);
+    }
+
+    /* "OTIENO" in crimson for contrast */
+    .hero-name .word:last-child span {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--newsprint);
+    }
+
+    .hero-tagline {
+      margin-top: 2rem;
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: clamp(1rem, 1.6vw, 1.35rem);
+      color: var(--stone);
+      line-height: 1.6;
+      max-width: 36ch;
+      opacity: 0;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      opacity: 0;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 2.2rem;
+      background: var(--gold);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      transition: background 0.3s, transform 0.3s;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: var(--newsprint); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      color: var(--newsprint);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(242,237,215,0.3);
+      cursor: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+
+    .btn-outline:hover { border-color: var(--newsprint); }
+
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 4rem;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      opacity: 0;
+    }
+
+    .scroll-line {
+      width: 60px;
+      height: 1px;
+      background: var(--stone);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: var(--gold);
+      animation: scrollLinePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLinePulse {
+      0%   { left: -100%; }
+      50%  { left: 0%; }
+      100% { left: 100%; }
+    }
+
+    /* Hero year stamp */
+    .hero-year {
+      position: absolute;
+      top: 40%;
+      right: -2rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--stone);
+      writing-mode: vertical-rl;
+      opacity: 0.4;
+      z-index: 4;
+    }
+
+    /* ══════════════════════════════════════════════════
+       § 2  ABOUT — Newspaper Unfold
+    ══════════════════════════════════════════════════ */
+    #about {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10rem 0;
+      background: var(--ink);
+      overflow: hidden;
+    }
+
+    #about::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* The newspaper wrapper */
+    .newspaper-wrap {
+      position: relative;
+      width: min(900px, 90vw);
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    /* The newspaper itself */
+    .newspaper {
+      position: relative;
+      background: var(--newsprint);
+      color: var(--ink);
+      padding: 3.5rem 4rem;
+      transform-origin: top center;
+      transform: rotateX(-85deg) scaleY(0.2);
+      opacity: 0;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(0,0,0,0.1),
+        inset 0 0 0 1px rgba(201,168,76,0.2);
+      will-change: transform, opacity;
+
+      /* Paper texture via CSS */
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, #F5F0DB 0%, #EDE8CA 100%);
+      background-blend-mode: multiply;
+    }
+
+    /* Fold shadow lines on newspaper */
+    .newspaper::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(100,80,40,0.12) 20%, rgba(100,80,40,0.12) 80%, transparent);
+      pointer-events: none;
+    }
+
+    .newspaper::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 25%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(100,80,40,0.07) 20%, rgba(100,80,40,0.07) 80%, transparent);
+      pointer-events: none;
+    }
+
+    /* Paper edge shadow on left/right */
+    .newspaper-shadow {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 6px 0 12px rgba(0,0,0,0.08), inset -6px 0 12px rgba(0,0,0,0.08);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Masthead */
+    .newspaper-masthead {
+      text-align: center;
+      border-bottom: 3px double rgba(10,10,15,0.4);
+      padding-bottom: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .masthead-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .masthead-meta {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--stone);
+      margin-top: 0.3rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .masthead-rule {
+      height: 1px;
+      background: var(--ink);
+      opacity: 0.3;
+      margin: 0.75rem 0;
+    }
+
+    /* Headline */
+    .newspaper-headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--ink);
+      text-align: center;
+      margin: 1.5rem 0;
+      letter-spacing: -0.01em;
+    }
+
+    .newspaper-headline em {
+      font-style: italic;
+      color: var(--crimson);
+    }
+
+    .newspaper-deck {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      text-align: center;
+      color: var(--charcoal);
+      font-style: italic;
+      max-width: 55ch;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+    }
+
+    /* Two-column body text */
+    .newspaper-body {
+      column-count: 2;
+      column-gap: 3rem;
+      column-rule: 1px solid rgba(10,10,15,0.2);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--ink);
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .newspaper-body p { margin-bottom: 0.75rem; }
+    .newspaper-body p:first-child::first-letter {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 900;
+      float: left;
+      line-height: 0.8;
+      margin: 0.1rem 0.3rem 0 0;
+      color: var(--crimson);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      break-inside: avoid;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 1rem 0;
+      margin: 1.5rem 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--crimson);
+      text-align: center;
+      column-span: all;
+    }
+
+    .newspaper-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(10,10,15,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--stone);
+    }
+
+    /* ══════════════════════════════════════════════════
+       § 3  TIMELINE
+    ══════════════════════════════════════════════════ */
+    #timeline {
+      padding: 8rem 0;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--gold) 15%, var(--gold) 85%, transparent);
+      opacity: 0.25;
+      transform: translateX(-50%);
+    }
+
+    .section-header {
+      text-align: center;
+      padding: 0 2rem;
+      margin-bottom: 6rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-eyebrow::before,
+    .section-eyebrow::after {
+      content: '—';
+      opacity: 0.5;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .timeline-grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      align-items: center;
+      gap: 2rem;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .timeline-item:nth-child(even) .clipping { order: 3; }
+    .timeline-item:nth-child(even) .timeline-dot-col { order: 2; }
+    .timeline-item:nth-child(even) .clipping-empty { order: 1; }
+
+    .timeline-dot-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .timeline-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px rgba(201,168,76,0.15), 0 0 20px rgba(201,168,76,0.3);
+    }
+
+    .timeline-year-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    /* Each clipping is a torn newspaper piece */
+    .clipping {
+      background: var(--smoke);
+      color: var(--ink);
+      padding: 1.5rem 1.75rem;
+      position: relative;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+      transform: rotate(var(--tilt, -1deg));
+      cursor: none;
+      transition: transform 0.4s var(--ease-expo), box-shadow 0.4s;
+    }
+
+    .clipping:hover {
+      transform: rotate(0deg) translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Torn edge effect on bottom */
+    .clipping::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0; right: 0;
+      height: 8px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='8'%3E%3Cpath d='M0 0 Q5 8 10 4 Q15 0 20 8 L20 8 L0 8Z' fill='%23E8E3D3'/%3E%3C/svg%3E");
+      background-size: 20px 8px;
+      background-repeat: repeat-x;
+    }
+
+    /* Tape strip at top */
+    .clipping::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 50px; height: 20px;
+      background: rgba(201,168,76,0.35);
+      backdrop-filter: blur(2px);
+    }
+
+    .clipping-paper-lines {
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 1.4rem,
+        rgba(10,10,15,0.06) 1.4rem,
+        rgba(10,10,15,0.06) calc(1.4rem + 1px)
+      );
+      background-size: 100% 1.41rem;
+      background-position: 0 1.4rem;
+      pointer-events: none;
+    }
+
+    .clipping-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 0.5rem;
+    }
+
+    .clipping-role {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+
+    .clipping-company {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      margin-bottom: 0.75rem;
+    }
+
+    .clipping-desc {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--charcoal);
+    }
+
+    .clipping-empty { /* spacer on alt side */ }
+
+    /* ══════════════════════════════════════════════════
+       § 4  WORK — Case Files
+    ══════════════════════════════════════════════════ */
+    #work {
+      background: var(--newsprint);
+      color: var(--ink);
+      padding: 8rem 0;
+      position: relative;
+    }
+
+    #work .section-title { color: var(--ink); }
+    #work .section-eyebrow { color: var(--crimson); }
+    #work .section-eyebrow::before,
+    #work .section-eyebrow::after { opacity: 0.4; color: var(--ink); }
+
+    .case-files-stack {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Sticky file stack container */
+    .case-file-trigger {
+      position: relative;
+    }
+
+    .case-file {
+      position: sticky;
+      top: 8rem;
+      background: #f8f4e8;
+      border: 1px solid rgba(10,10,15,0.12);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      margin-bottom: 3rem;
+      cursor: none;
+      overflow: hidden;
+
+      /* Slight rotation per file for physical feel */
+      transform: rotate(var(--file-tilt, 0deg));
+      transition: transform 0.5s var(--ease-expo), box-shadow 0.5s;
+    }
+
+    .case-file:hover {
+      transform: rotate(0deg) translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    /* Manila folder tab */
+    .file-tab {
+      background: #e8dfc0;
+      border-bottom: 1px solid rgba(10,10,15,0.12);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--charcoal);
+      text-transform: uppercase;
+    }
+
+    .file-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--crimson);
+    }
+
+    .file-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--stone);
+    }
+
+    /* Status dot via data attribute — avoids the inline-style/pseudo-element limitation */
+    .file-status::before {
+      content: '●';
+      font-size: 0.5rem;
+    }
+    .file-status[data-status="Delivered"]::before   { color: #2d8a4e; }
+    .file-status[data-status="In Progress"]::before { color: #C9A84C; }
+    .file-status[data-status="Concept"]::before     { color: #9E9585; }
+
+    /* File body — the preview (always visible) */
+    .file-preview {
+      padding: 2.5rem 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 1.5rem;
+    }
+
+    .file-client {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 0.5rem;
+    }
+
+    .file-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-role-tag {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+    }
+
+    .file-open-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: var(--stone);
+      cursor: none;
+      transition: color 0.3s;
+    }
+
+    .file-open-btn:hover { color: var(--ink); }
+
+    .file-arrow {
+      width: 32px; height: 32px;
+      border: 1px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: transform 0.4s var(--ease-expo);
+    }
+
+    .file-open-btn:hover .file-arrow { transform: rotate(45deg); }
+
+    /* Expandable file content — max-height animates from 0 to open.
+       We use a very large max-height (2000px) so no content is ever clipped.
+       The CSS transition handles the smooth open/close animation.            */
+    .file-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .file-content.open { max-height: 2000px; }
+
+    .file-content-inner {
+      padding: 0 2.5rem 2.5rem;
+      border-top: 1px solid rgba(10,10,15,0.1);
+      padding-top: 1.5rem;
+    }
+
+    .case-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .case-detail h4 {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 0.5rem;
+    }
+
+    .case-detail p {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--charcoal);
+    }
+
+    /* Screenshot mosaic */
+    .case-screenshots {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .screenshot-frame {
+      background: var(--charcoal);
+      border-radius: 2px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      position: relative;
+    }
+
+    .screenshot-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 60%);
+    }
+
+    .screenshot-frame-tall {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+
+    /* Browser chrome mock */
+    .browser-chrome {
+      height: 24px;
+      background: #1a1a25;
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .browser-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    .bd-red { background: #ff5f56; }
+    .bd-yellow { background: #ffbd2e; }
+    .bd-green { background: #27c93f; }
+
+    .browser-content {
+      flex: 1;
+      background: linear-gradient(135deg, #1e2030 0%, #2a2a40 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Placeholder UI in screenshots */
+    .mock-ui {
+      width: 85%;
+      height: 70%;
+      position: relative;
+    }
+
+    .mock-header {
+      height: 12%;
+      background: rgba(201,168,76,0.15);
+      border-radius: 2px;
+      margin-bottom: 6%;
+    }
+
+    .mock-hero-block {
+      height: 35%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 2px;
+      margin-bottom: 4%;
+    }
+
+    .mock-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4%;
+      height: 28%;
+    }
+
+    .mock-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 2px;
+    }
+
+    /* Client testimonial on file */
+    .client-feedback {
+      background: rgba(10,10,15,0.04);
+      border-left: 3px solid var(--crimson);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    .feedback-author {
+      display: block;
+      margin-top: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--stone);
+      font-style: normal;
+    }
+
+    /* ══════════════════════════════════════════════════
+       § 5  SERVICES
+    ══════════════════════════════════════════════════ */
+    #services {
+      background: var(--ink);
+      padding: 8rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #services::before {
+      content: 'SERVICES';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: 20vw;
+      font-weight: 900;
+      color: rgba(242,237,215,0.02);
+      letter-spacing: -0.05em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .services-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      border: 1px solid rgba(242,237,215,0.08);
+    }
+
+    .service-card {
+      padding: 3.5rem;
+      border: 1px solid rgba(242,237,215,0.08);
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      transition: background 0.4s;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s var(--ease-expo);
+      z-index: 0;
+    }
+
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover .service-number,
+    .service-card:hover .service-title,
+    .service-card:hover .service-desc,
+    .service-card:hover .service-outcome { color: var(--ink); }
+    .service-card:hover .service-icon { color: var(--ink); }
+
+    .service-card > * { position: relative; z-index: 1; }
+
+    .service-number {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      transition: color 0.4s;
+    }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+      color: var(--newsprint);
+      transition: color 0.4s;
+    }
+
+    .service-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--newsprint);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      transition: color 0.4s;
+    }
+
+    .service-desc {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--stone);
+      margin-bottom: 1.5rem;
+      transition: color 0.4s;
+    }
+
+    .service-outcome {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      transition: color 0.4s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .service-outcome::before { content: '→'; }
+
+    /* ══════════════════════════════════════════════════
+       § 6  CONTACT
+    ══════════════════════════════════════════════════ */
+    #contact {
+      background: var(--newsprint);
+      color: var(--ink);
+      padding: 10rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #contact::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .contact-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .contact-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    .contact-headline em {
+      font-style: italic;
+      color: var(--crimson);
+    }
+
+    .contact-subtext {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--stone);
+      max-width: 50ch;
+      margin: 0 auto 3.5rem;
+      line-height: 1.7;
+    }
+
+    .contact-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 3rem;
+      background: var(--ink);
+      color: var(--newsprint);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: none;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+      font-weight: 700;
+    }
+
+    .contact-cta:hover {
+      background: var(--crimson);
+      transform: translateY(-3px);
+    }
+
+    .contact-divider {
+      width: 80px;
+      height: 1px;
+      background: rgba(10,10,15,0.2);
+      margin: 4rem auto;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+    }
+
+    .contact-link {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .contact-link:hover { color: var(--ink); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: var(--stone);
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── LOADING SCREEN ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .loader-name {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      color: var(--newsprint);
+      letter-spacing: 0.1em;
+      overflow: hidden;
+    }
+
+    .loader-name span {
+      display: inline-block;
+      transform: translateY(100%);
+    }
+
+    .loader-bar-wrap {
+      width: 200px;
+      height: 1px;
+      background: rgba(242,237,215,0.15);
+      overflow: hidden;
+    }
+
+    .loader-bar {
+      height: 100%;
+      background: var(--gold);
+      width: 0%;
+      transition: width 0.05s linear;
+    }
+
+    .loader-count {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+    }
+
+    /* ══════════════════════════════════════════════════
+       UTILITY / RESPONSIVE
+    ══════════════════════════════════════════════════ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      /* Hide desktop links; show hamburger button */
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .hero-content { grid-template-columns: 1fr; padding: 0 2rem; }
+      .hero-portrait { right: 0; width: 55vw; opacity: 0.3; }
+      .hero-name { font-size: clamp(3.5rem, 14vw, 7rem); }
+      .hero-scroll-indicator { left: 2rem; }
+
+      #about { padding: 6rem 1.5rem; }
+      .newspaper { padding: 2rem 1.5rem; }
+      .newspaper-body { column-count: 1; }
+
+      /* On mobile, timeline runs as a single vertical column.
+         The alternating left/right layout collapses to: dot → clipping. */
+      .timeline-item { grid-template-columns: 40px 1fr; gap: 1rem; }
+      .timeline-item .clipping { grid-column: 2; }
+      .timeline-item .timeline-dot-col { grid-column: 1; grid-row: 1; }
+      /* Override the even-item reordering that works on desktop */
+      .timeline-item:nth-child(even) .clipping     { order: unset; grid-column: 2; }
+      .timeline-item:nth-child(even) .timeline-dot-col { order: unset; grid-column: 1; }
+      .timeline-item:nth-child(even) .clipping-empty   { display: none; }
+      .clipping-empty { display: none; }
+      /* Move the timeline spine to the left to align with the dot column.
+         The dot column is 40px wide with 2rem (32px) left padding on the grid.
+         So spine lives at 32 + 20 = 52px from left.                        */
+      #timeline::before { left: 52px; transform: none; }
+
+      /* Work section — mobile specific */
+      /* Remove the rotation effect on small screens; it causes overflow issues */
+      .case-file { transform: none !important; }
+      .case-file:hover { transform: none !important; }
+
+      /* Increase tap target for the open/close button */
+      .file-open-btn {
+        min-width: 48px;
+        min-height: 48px;
+        justify-content: center;
+      }
+      .file-arrow { width: 44px; height: 44px; }
+
+      /* Stack the file preview vertically on narrow screens */
+      .file-preview { grid-template-columns: 1fr; }
+      .file-open-btn { flex-direction: row; gap: 0.75rem; }
+
+      /* Detail grids stack */
+      .case-detail-grid { grid-template-columns: 1fr; }
+      .case-screenshots { grid-template-columns: 1fr; }
+
+      /* Give file content more breathing room on mobile */
+      .file-content-inner { padding: 0 1.5rem 1.5rem; }
+      .file-preview { padding: 1.5rem; }
+      .file-tab { padding: 0.75rem 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+
+      .services-grid { grid-template-columns: 1fr; padding: 0 2rem; }
+
+      .contact-inner { padding: 0 2rem; }
+      .contact-links { flex-direction: column; gap: 1.5rem; align-items: center; }
+
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
+    }
+
+    /* Extra small — prevent any horizontal overflow on very narrow devices */
+    @media (max-width: 420px) {
+      .hero-name { font-size: clamp(3rem, 16vw, 5rem); }
+      .newspaper-headline { font-size: clamp(1.4rem, 6vw, 2rem); }
+      .contact-headline { font-size: clamp(2rem, 9vw, 3.5rem); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── LOADER ── -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-name">
+    <span>S</span><span>T</span><span>E</span><span>P</span><span>H</span><span>E</span><span>N</span>
+  </div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loaderBar"></div>
+  </div>
+  <div class="loader-count" id="loaderCount">0%</div>
+</div>
+
+<!-- ── CUSTOM CURSOR ── -->
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════ -->
+<nav role="navigation" aria-label="Main navigation" id="mainNav">
+  <a href="#hero" class="nav-logo">S. Otieno</a>
+
+  <!-- Desktop navigation links — hidden on mobile via CSS -->
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#timeline">Journey</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <!-- Hamburger — visible on mobile only (CSS media query shows this) -->
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile fullscreen menu overlay — toggled by JS via .nav-open class on <body> -->
+<div class="nav-mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+  <a href="#about"    class="mobile-nav-link">About</a>
+  <a href="#timeline" class="mobile-nav-link">Journey</a>
+  <a href="#work"     class="mobile-nav-link">Work</a>
+  <a href="#services" class="mobile-nav-link">Services</a>
+  <a href="#contact"  class="mobile-nav-link">Contact</a>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     § 1  HERO
+════════════════════════════════════════════════ -->
+<section id="hero" aria-label="Introduction">
+  <!-- Grid overlay -->
+  <div class="hero-grid-lines" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       PORTRAIT — HOW TO ADD YOUR PHOTO:
+       ──────────────────────────────────────────────────────────────
+       When you have a professional portrait ready:
+
+       1. Place your image file in the same folder as this HTML.
+          Recommended filename: stephen-portrait.jpg
+          Recommended size: 800px wide × 1100px tall (or taller)
+          Preferred style: dark or neutral background, upper-body shot
+
+       2. Replace the entire <div class="portrait-placeholder"> block
+          below with this single <img> tag:
+
+          <img
+            src="stephen-portrait.jpg"
+            alt="Portrait of Stephen Otieno"
+            class="hero-portrait-img"
+            loading="eager"
+          />
+
+       3. The .hero-portrait-img class already has the right CSS:
+          object-fit: cover; object-position: top center;
+          grayscale(20%) contrast(1.05) — remove the filter if you
+          prefer full colour.
+
+       Until then, the CSS gradient silhouette below serves as a
+       dignified, on-brand placeholder.
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
+    <div class="portrait-placeholder" role="img" aria-label="Portrait of Stephen Otieno — photo coming soon"></div>
+  </div>
+
+  <!-- Text content -->
+  <div class="hero-content">
+    <div class="hero-text">
+  <p class="hero-eyebrow" id="heroEyebrow">CS Student · Maseno University · Nairobi</p>
+
+      <h1 class="hero-name" id="heroName">
+        <span class="word"><span>Stephen</span></span>
+        <span class="word"><span>Otieno</span></span>
+      </h1>
+
+      <p class="hero-tagline" id="heroTagline">
+        A Computer Science student who lives at the intersection of<br />
+        <em>design thinking and frontend engineering</em> — building<br />
+        things that are thoughtful, beautiful, and real.
+      </p>
+
+      <div class="hero-cta-row" id="heroCtaRow">
+        <a href="#work" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-scroll-indicator" id="heroScroll" aria-hidden="true">
+    <span class="scroll-line"></span>
+    Scroll to Explore
+  </div>
+
+  <!-- Year stamp — reflects current university year, update each September -->
+  <span class="hero-year" aria-hidden="true">3rd Year · 2025</span>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     § 2  ABOUT — Newspaper Unfold
+════════════════════════════════════════════════ -->
+<section id="about" aria-label="About Stephen Otieno">
+    <div class="newspaper-wrap" id="newspaperWrap">
+    <div class="newspaper" id="newspaper" role="article">
+      <div class="newspaper-shadow" aria-hidden="true"></div>
+
+      <!-- Masthead -->
+      <header class="newspaper-masthead">
+        <div class="masthead-title">The Maseno Dispatch</div>
+        <div class="masthead-meta">
+          <span>Vol. III, No. 12</span>
+          <span>Arts, Technology & Culture</span>
+          <span>Maseno University, Kenya</span>
+        </div>
+      </header>
+
+      <div class="masthead-rule" aria-hidden="true"></div>
+
+      <!-- Headline -->
+      <h2 class="newspaper-headline">
+        The Boy Who Drew Everything —<br />Now <em>Builds</em> It
+      </h2>
+
+      <p class="newspaper-deck">
+        How a childhood love of drawing, a father's drafting table, and a Computer
+        Science degree converged into one young designer's defining purpose.
+      </p>
+
+      <div class="masthead-rule" aria-hidden="true"></div>
+
+      <!-- Two-column article body — Stephen's real story -->
+      <div class="newspaper-body">
+        <p>
+          Long before Stephen Otieno understood what a pixel was, he understood
+          line. Growing up in Kenya, he was the child who drew on everything —
+          margins of textbooks, backs of receipts, whatever surface would hold
+          a mark. Classmates would crowd to see what he'd made. That early
+          hunger to create something that stopped people, that made them look
+          twice, never left him.
+        </p>
+
+        <p>
+          His father is a graphic designer. That fact shaped Stephen more than
+          any classroom. He grew up watching a man arrange type, balance colour,
+          argue for white space — treating visual decisions with the seriousness
+          most people reserve for engineering or law. Design, in that household,
+          was not decoration. It was thinking made visible.
+        </p>
+
+        <div class="pull-quote" role="blockquote">
+          "I always wanted to be an architectural engineer. Then I discovered you could build entire worlds on a screen — and they could move."
+        </div>
+
+        <p>
+          For a time, Stephen dreamed of becoming an architectural engineer.
+          He was drawn to scale, structure, and the idea that you could design
+          spaces people would inhabit and feel. That dream evolved rather than
+          disappeared: when he encountered modern digital design — interfaces
+          that breathed, websites that told stories, apps that anticipated what
+          you needed before you asked — he recognized the same discipline, applied
+          to a different kind of space.
+        </p>
+
+        <p>
+          He enrolled in Computer Science at Maseno University. The choice was
+          deliberate: he wanted the technical foundation to build what he could
+          imagine, not just design it and hand it to someone else. Now in his
+          third year, Stephen sits at the intersection he has always gravitated
+          toward — the place where logic and creativity are not opposites but
+          collaborators. He designs. He codes. And increasingly, he does both
+          at once.
+        </p>
+      </div>
+
+      <footer class="newspaper-footer" aria-label="Article metadata">
+        <span>Stephen Otieno, Maseno University</span>
+        <span>UI/UX · Frontend · Creative Technology</span>
+        <span>Open to Opportunities</span>
+      </footer>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     § 3  TIMELINE — Data-driven personal journey
+     ────────────────────────────────────────────────
+     TO ADD A NEW JOURNEY ENTRY:
+     Open the <script> block near the bottom of this file.
+     Find the journeyData array. Add one object following
+     the same shape as the existing entries. The HTML here
+     is generated automatically — you never need to touch
+     this section's markup.
+════════════════════════════════════════════════ -->
+<section id="timeline" aria-label="Personal Journey">
+  <div class="section-header">
+    <p class="section-eyebrow">The Journey</p>
+    <h2 class="section-title">A Story in <em>Chapters</em></h2>
+  </div>
+
+  <!--
+    .timeline-grid is intentionally empty here.
+    The renderJourney() function in the script block populates it
+    by looping over the journeyData[] array.
+    This keeps all content in one maintainable place.
+  -->
+  <div class="timeline-grid" id="timelineGrid" role="list">
+    <!-- Rendered by renderJourney() in <script> -->
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     § 4  WORK — Case Files
+     ────────────────────────────────────────────────
+     TO ADD A NEW PROJECT:
+     Open the <script> block at the bottom of this file.
+     Find the workData array. Add one object with the same
+     shape as the existing entries. The HTML is generated
+     automatically by renderWork(). No layout code changes needed.
+════════════════════════════════════════════════ -->
+<section id="work" aria-label="Selected Work">
+  <div class="section-header" style="color: var(--ink);">
+    <p class="section-eyebrow">Case Files</p>
+    <h2 class="section-title" style="color: var(--ink);">Selected <em style="color: var(--crimson);">Work</em></h2>
+  </div>
+
+  <!--
+    #caseFilesStack is intentionally empty here.
+    The renderWork() function in the script block populates it
+    by looping over workData[] and building each file's HTML.
+    To add a project: edit workData[] only.
+  -->
+  <div class="case-files-stack" id="caseFilesStack">
+    <!-- Rendered by renderWork() in <script> -->
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     § 5  SERVICES
+════════════════════════════════════════════════ -->
+<section id="services" aria-label="Services">
+  <div class="section-header">
+    <p class="section-eyebrow">What I Do</p>
+    <h2 class="section-title">Outcomes, <em>Not</em> Features</h2>
+  </div>
+
+  <div class="services-grid" role="list">
+
+    <article class="service-card" role="listitem">
+      <div class="service-number">01</div>
+      <span class="service-icon" aria-hidden="true">◻</span>
+      <h3 class="service-title">Website Development</h3>
+      <p class="service-desc">
+        Fast, accessible, beautifully built websites that represent your brand
+        at its highest quality — from concept to deployment and beyond.
+      </p>
+      <div class="service-outcome">You get a digital presence that converts</div>
+    </article>
+
+    <article class="service-card" role="listitem">
+      <div class="service-number">02</div>
+      <span class="service-icon" aria-hidden="true">◈</span>
+      <h3 class="service-title">UI/UX Design</h3>
+      <p class="service-desc">
+        Interfaces rooted in research, refined through iteration, and tested against
+        real human behaviour. Design that guides without intrusion.
+      </p>
+      <div class="service-outcome">Your users stay, return, and recommend</div>
+    </article>
+
+    <article class="service-card" role="listitem">
+      <div class="service-number">03</div>
+      <span class="service-icon" aria-hidden="true">◉</span>
+      <h3 class="service-title">Brand Presence</h3>
+      <p class="service-desc">
+        Visual identity systems that hold together across digital and physical
+        touchpoints — logos, type, colour, voice, and the feeling they leave behind.
+      </p>
+      <div class="service-outcome">You become instantly recognisable</div>
+    </article>
+
+    <article class="service-card" role="listitem">
+      <div class="service-number">04</div>
+      <span class="service-icon" aria-hidden="true">◬</span>
+      <h3 class="service-title">Digital Solutions</h3>
+      <p class="service-desc">
+        Custom tools, dashboards, and web applications that solve specific
+        business problems — built to scale and maintained with care.
+      </p>
+      <div class="service-outcome">Your operations run smarter</div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     § 6  CONTACT
+     ────────────────────────────────────────────────
+     TO UPDATE CONTACT DETAILS:
+     Search this file for "stephen.ochiengofficial" to find
+     all mailto links. Replace the email address in each one.
+     Search for "linkedin.com/in/stephen-otieno" and
+     "github.com/Rexsteve" to update social links.
+════════════════════════════════════════════════ -->
+<section id="contact" aria-label="Contact">
+  <div class="contact-inner">
+    <h2 class="contact-headline">
+      Let's Build Something<br /><em>Worth Remembering</em>
+    </h2>
+
+    <p class="contact-subtext">
+      Whether it's a project, a collaboration, or simply a great conversation
+      about design and code — I'm always glad to connect.
+    </p>
+
+    <!-- Primary CTA email link — update the email address here to change it everywhere -->
+    <a href="mailto:stephen.ochiengofficial@gmail.com" class="contact-cta">
+      Start a Conversation →
+    </a>
+
+    <div class="contact-divider" aria-hidden="true"></div>
+
+    <nav class="contact-links" aria-label="Social and contact links">
+      <!-- Real LinkedIn profile -->
+      <a href="https://www.linkedin.com/in/stephen-otieno-a64294300/"
+         class="contact-link"
+         target="_blank"
+         rel="noopener noreferrer">LinkedIn</a>
+
+      <!-- Real GitHub profile -->
+      <a href="https://github.com/Rexsteve"
+         class="contact-link"
+         target="_blank"
+         rel="noopener noreferrer">GitHub</a>
+
+      <!-- Direct email link -->
+      <a href="mailto:stephen.ochiengofficial@gmail.com"
+         class="contact-link">Email</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>© 2025 Stephen Otieno. All rights reserved.</span>
+  <span>Maseno University · CS Student · Open to Opportunities</span>
+  <span>stephen.ochiengofficial@gmail.com</span>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════ -->
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   STEPHEN OTIENO — PORTFOLIO SCRIPT
+   ────────────────────────────────────────────────────────────────────
+   This file is structured in three layers:
+
+   1. DATA LAYER   — journeyData[] and workData[]
+                     Edit ONLY these arrays to update content.
+
+   2. RENDER LAYER — renderJourney() and renderWork()
+                     These convert data arrays into HTML.
+                     Do not edit unless you need to change layout.
+
+   3. ANIMATION LAYER — GSAP + ScrollTrigger setup.
+                        Do not edit unless you want to change
+                        animation behaviour.
+═══════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════
+   § DATA — JOURNEY
+   ────────────────────────────────────────────────
+   HOW TO ADD A NEW JOURNEY ENTRY:
+   1. Copy any object below.
+   2. Paste it at the end of the array (before the ] ).
+   3. Fill in: year, chapter, role, context, description.
+   4. Save. The page renders it automatically.
+
+   Fields:
+   - year       : string, e.g. "2023"
+   - chapter    : short label for the era, e.g. "The Turn"
+   - role       : headline of what you were doing
+   - context    : where / what setting (school, self, project)
+   - description: 1–2 sentences. Be truthful and specific.
+   - tilt       : slight rotation in degrees (keep between -2 and 2)
+════════════════════════════════════════════════ */
+const journeyData = [
+  {
+    year:        'Childhood',
+    chapter:     'First Marks',
+    role:        'The Boy Who Drew Everything',
+    context:     'Growing up in Kenya',
+    description: 'Art was the first language. Sketchbooks, notebook margins, any flat surface — Stephen filled them all. Classmates would gather to see what he\'d drawn. This compulsion to make things visible never went away.',
+    tilt:        -1.5
+  },
+  {
+    year:        'High School',
+    chapter:     'Design Awakens',
+    role:        'Discovering Digital Possibility',
+    context:     'Influenced by his father, a graphic designer',
+    description: 'Growing up watching his father work — arranging type, choosing colour, arguing for white space — Stephen learned that design was serious thinking, not decoration. When he first encountered interfaces that moved and responded, he saw the same discipline applied to a new kind of space.',
+    tilt:        1.2
+  },
+  {
+    year:        '2023',
+    chapter:     'The Foundation',
+    role:        'Computer Science Student',
+    context:     'Maseno University, Kenya',
+    description: 'Enrolled in Computer Science to build the technical foundation his imagination needed. The degree gave him algorithms, data structures, and systems thinking. He added design on top — and the two started talking to each other in productive ways.',
+    tilt:        -0.8
+  },
+  {
+    year:        '2024',
+    chapter:     'Learning by Building',
+    role:        'Frontend Developer — Self-Directed',
+    context:     'HTML, CSS, JavaScript, React',
+    description: 'Took web development seriously as a craft, not just a skill. Studied typography, layout, motion, and accessibility. Started building real things: components, UI experiments, personal tools. The gap between what he could imagine and what he could build began to close.',
+    tilt:        1.6
+  },
+  {
+    year:        '2025',
+    chapter:     'First Real Client',
+    role:        'Web Designer & Developer',
+    context:     'Comprint Concepts Limited, Nairobi',
+    description: 'Built a complete multi-page website for a Nairobi printing and branding company — his first significant real-world project. Handled UX decisions, responsive implementation, performance optimisation, and brand alignment from brief to launch.',
+    tilt:        -1.1
+  },
+  {
+    year:        'Now',
+    chapter:     'In Progress',
+    role:        'Third-Year Student & Creative Technologist',
+    context:     'Continuously building, learning, improving',
+    description: 'Deepening expertise in UI/UX design and frontend engineering simultaneously. Looking for collaborations, freelance projects, and opportunities to create work that is both technically sound and genuinely beautiful.',
+    tilt:        0.8
+  }
+];
+
+
+/* ════════════════════════════════════════════════
+   § DATA — WORK / PROJECTS
+   ────────────────────────────────────────────────
+   HOW TO ADD A NEW PROJECT:
+   1. Copy any object below.
+   2. Paste at the end of the array.
+   3. Fill in all fields. Be truthful — no invented metrics.
+   4. For status use: 'Delivered' | 'In Progress' | 'Concept'
+   5. The page renders it automatically.
+
+   Fields:
+   - id          : unique string, e.g. 'file4' (no spaces)
+   - number      : display string, e.g. '04'
+   - label       : project name shown in the file tab (ALL CAPS)
+   - context     : where / what type of project
+   - title       : displayed as the main file headline
+   - tags        : comma-separated skills, shown as a badge
+   - status      : 'Delivered' | 'In Progress' | 'Concept'
+   - tilt        : file rotation in degrees
+   - overview    : what the project is
+   - challenge   : what problem existed
+   - solution    : what you did (be specific about your decisions)
+   - outcome     : honest results — no fabricated numbers
+   - feedback    : optional { quote, author } — leave null if none
+════════════════════════════════════════════════ */
+const workData = [
+  {
+    id:        'file1',
+    number:    '01',
+    label:     'COMPRINT CONCEPTS LTD.',
+    context:   'Client Project — Nairobi, Kenya',
+    title:     'Business Website & Digital Presence',
+    tags:      'Web Design · Responsive Dev · Brand',
+    status:    'Delivered',
+    tilt:      -0.8,
+    overview:  'Designed and built a complete multi-page website for Comprint Concepts Limited, a Nairobi-based printing and branding company. The project covered all pages: Home, Services, Portfolio, and Clients.',
+    challenge: 'The company had no existing website. Their physical work — print, signage, branding — was high quality, but potential clients had no way to discover or evaluate them online. The goal was to create a digital presence that matched the quality of their output.',
+    solution:  'Built a responsive, multi-page HTML/CSS/JavaScript site. Designed a hero carousel to showcase work, a services section with a fuzzy-search bar for quick lookup, a portfolio gallery with lazy-loaded images, and WhatsApp-integrated CTAs for direct enquiries. Paid careful attention to mobile performance and image optimisation throughout.',
+    outcome:   'Comprint Concepts now has a professional web presence for the first time. The site is live and used in their business communications. No inflated metrics — the value is in the foundation it provides.',
+    feedback:  null
+  },
+  {
+    id:        'file2',
+    number:    '02',
+    label:     'PERSONAL DESIGN SYSTEM',
+    context:   'Personal Project — Ongoing',
+    title:     'UI Component Library & Design Tokens',
+    tags:      'UI Design · CSS · Design Systems',
+    status:    'In Progress',
+    tilt:      0.6,
+    overview:  'An ongoing personal project to build a reusable set of UI components and design tokens — colour scales, typographic ramp, spacing system, and interactive elements — that can be dropped into any future project.',
+    challenge: 'Every new project was starting from scratch. Time spent rebuilding buttons, form elements, and layout primitives was time not spent solving the actual design problem. A personal design system solves that upstream.',
+    solution:  'Building components in plain CSS custom properties and vanilla JavaScript first, then porting the most-used ones to React. Documenting each decision: why this spacing, why this type scale, why this focus state. The documentation is as important as the components themselves.',
+    outcome:   'Work in progress. Three projects have already borrowed components from the early system. The act of building it has sharpened understanding of CSS architecture and design token methodology considerably.',
+    feedback:  null
+  },
+  {
+    id:        'file3',
+    number:    '03',
+    label:     'UNIVERSITY PROJECT — CS COURSEWORK',
+    context:   'Academic Project — Maseno University',
+    title:     'Frontend UI for a Library Management System',
+    tags:      'HTML · CSS · JavaScript · UX',
+    status:    'Delivered',
+    tilt:      -0.4,
+    overview:  'A university coursework project to design and build the frontend interface of a library management system. The system allows students to search, borrow, and return books through a web interface.',
+    challenge: 'Most coursework submissions at this level focus entirely on backend logic. The UX is often an afterthought. The challenge was to show that the interface layer deserves the same engineering rigour as the database layer beneath it.',
+    solution:  'Designed the full interface in Figma first, establishing a clear information hierarchy and interaction flow. Then implemented it in HTML, CSS, and JavaScript — with attention to search input states, loading feedback, empty states, and error handling. Applied accessibility basics: keyboard navigation, focus management, adequate contrast ratios.',
+    outcome:   'Submitted and graded. More importantly, it demonstrated that design decisions made before a single line of code is written produce better outcomes than design decisions made after.',
+    feedback:  null
+  }
+];
+
+
+/* ════════════════════════════════════════════════
+   § RENDER — JOURNEY
+   Converts journeyData[] into timeline HTML.
+   The alternating left/right layout is handled by
+   CSS (nth-child even rule) — the JS just inserts
+   entries in order.
+════════════════════════════════════════════════ */
+function renderJourney() {
+  const grid = document.getElementById('timelineGrid');
+  if (!grid) return;
+
+  grid.innerHTML = journeyData.map((entry, i) => {
+    /* Even-indexed items have the clipping on the right side;
+       odd on the left. CSS handles the visual swap via nth-child.
+       We just always put clipping, dot-col, empty in that order
+       for odd, and empty, dot-col, clipping for even.            */
+    const isEven = i % 2 !== 0; /* 0-indexed so "even" visual = odd index */
+
+    const clippingHTML = `
+      <div class="clipping" style="--tilt: ${entry.tilt}deg">
+        <div class="clipping-paper-lines" aria-hidden="true"></div>
+        <div class="clipping-label">${entry.year} — ${entry.chapter}</div>
+        <div class="clipping-role">${entry.role}</div>
+        <div class="clipping-company">${entry.context}</div>
+        <p class="clipping-desc">${entry.description}</p>
+      </div>`;
+
+    const dotHTML = `
+      <div class="timeline-dot-col" aria-hidden="true">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year-label">${entry.year}</div>
+      </div>`;
+
+    const emptyHTML = `<div class="clipping-empty" aria-hidden="true"></div>`;
+
+    return `
+      <div class="timeline-item" role="listitem">
+        ${isEven ? emptyHTML + dotHTML + clippingHTML : clippingHTML + dotHTML + emptyHTML}
+      </div>`;
+  }).join('');
+}
+
+
+/* ════════════════════════════════════════════════
+   § RENDER — WORK / CASE FILES
+   Converts workData[] into case file HTML.
+   Each file has a visible preview and a collapsible
+   detail section opened by toggleFile().
+════════════════════════════════════════════════ */
+function renderWork() {
+  const stack = document.getElementById('caseFilesStack');
+  if (!stack) return;
+
+  stack.innerHTML = workData.map((project, i) => {
+
+    /* Optional client feedback block */
+    const feedbackHTML = project.feedback ? `
+      <blockquote class="client-feedback">
+        "${project.feedback.quote}"
+        <cite class="feedback-author">— ${project.feedback.author}</cite>
+      </blockquote>` : '';
+
+    /* Browser chrome mock — decorative visual representation of the project.
+       In the future, replace this with real <img> screenshots.               */
+    const screenshotHTML = `
+      <div class="case-screenshots" aria-label="Project visual">
+        <div class="screenshot-frame screenshot-frame-tall">
+          <div class="browser-chrome" aria-hidden="true">
+            <div class="browser-dot bd-red"></div>
+            <div class="browser-dot bd-yellow"></div>
+            <div class="browser-dot bd-green"></div>
+          </div>
+          <div class="browser-content">
+            <div class="mock-ui" aria-hidden="true">
+              <div class="mock-header"></div>
+              <div class="mock-hero-block"></div>
+              <div class="mock-cards">
+                <div class="mock-card"></div>
+                <div class="mock-card"></div>
+                <div class="mock-card"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div class="screenshot-frame" style="flex:1">
+            <div class="browser-content" style="background:linear-gradient(135deg,#1a2030,#2a3050);">
+              <div style="width:70%;height:60%;background:rgba(201,168,76,0.08);border-radius:2px;"></div>
+            </div>
+          </div>
+          <div class="screenshot-frame" style="flex:1">
+            <div class="browser-content" style="background:linear-gradient(135deg,#201a2a,#2a1a30);">
+              <div style="width:70%;height:60%;background:rgba(139,26,26,0.1);border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--
+        SCREENSHOT REPLACEMENT GUIDE:
+        Replace the .case-screenshots block above with:
+        <img src="your-screenshot.jpg" alt="[Project name] screenshot"
+             loading="lazy" style="width:100%;border-radius:2px;" />
+        Use 1200×800px images at 80% JPEG quality for best results.
+      -->`;
+
+    return `
+      <div class="case-file-trigger">
+        <article class="case-file"
+                 id="${project.id}"
+                 style="--file-tilt: ${project.tilt}deg"
+                 aria-label="Case File ${project.number}: ${project.label}">
+
+          <!-- File tab — the manila folder header -->
+          <div class="file-tab">
+            <span class="file-number">FILE — ${project.number}</span>
+            <span>${project.label}</span>
+            <span class="file-status" data-status="${project.status}">${project.status}</span>
+          </div>
+
+          <!-- File preview — always visible summary -->
+          <div class="file-preview">
+            <div>
+              <div class="file-client">${project.context}</div>
+              <div class="file-title">${project.title}</div>
+              <span class="file-role-tag">${project.tags}</span>
+            </div>
+            <!-- Open button — toggleFile() expands the detail section -->
+            <button class="file-open-btn"
+                    onclick="toggleFile('${project.id}Content', this)"
+                    aria-expanded="false"
+                    aria-controls="${project.id}Content">
+              <div class="file-arrow" aria-hidden="true">+</div>
+              <span>Open</span>
+            </button>
+          </div>
+
+          <!-- Collapsible detail section — hidden until Open is clicked -->
+          <div class="file-content" id="${project.id}Content">
+            <div class="file-content-inner">
+
+              <!-- Four-quadrant case study grid -->
+              <div class="case-detail-grid">
+                <div class="case-detail">
+                  <h4>Overview</h4>
+                  <p>${project.overview}</p>
+                </div>
+                <div class="case-detail">
+                  <h4>Challenge</h4>
+                  <p>${project.challenge}</p>
+                </div>
+                <div class="case-detail">
+                  <h4>Solution</h4>
+                  <p>${project.solution}</p>
+                </div>
+                <div class="case-detail">
+                  <h4>Outcome</h4>
+                  <p>${project.outcome}</p>
+                </div>
+              </div>
+
+              ${screenshotHTML}
+              ${feedbackHTML}
+
+            </div>
+          </div>
+
+        </article>
+      </div>`;
+  }).join('');
+}
+
+
+/* ════════════════════════════════════════════════
+   § CUSTOM CURSOR
+   A gold dot follows the mouse precisely.
+   A larger ring follows with a slight lag —
+   achieved by lerping (linear interpolating) the
+   ring's position toward the mouse each frame.
+   The ring expands on hover over interactive elements
+   to give a tactile click-invitation feeling.
+════════════════════════════════════════════════ */
+(function() {
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  /* Hide cursor elements on touch devices — they have no mouse */
+  if (!cursor || !ring || window.matchMedia('(pointer: coarse)').matches) {
+    if (cursor) cursor.style.display = 'none';
+    if (ring)   ring.style.display   = 'none';
+    return;
+  }
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+
+  /* Animate ring toward mouse at 12% per frame — creates lag/inertia */
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  /* Expand ring on any interactive element hover */
+  function bindHoverToNewElements() {
+    document.querySelectorAll('a, button, .case-file, .clipping, .service-card').forEach(el => {
+      if (el.dataset.cursorBound) return; /* Prevent duplicate listeners */
+      el.dataset.cursorBound = '1';
+      el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+    });
+  }
+
+  /* Call once immediately, then again after render (new elements added by JS) */
+  bindHoverToNewElements();
+  setTimeout(bindHoverToNewElements, 500);
+})();
+
+
+/* ════════════════════════════════════════════════
+   § MOBILE NAVIGATION HAMBURGER
+   Toggles .nav-open on <body>.
+   CSS uses body.nav-open to show the mobile overlay
+   and animate the hamburger bars into an ×.
+   Menu closes when a link is tapped, or Escape pressed.
+════════════════════════════════════════════════ */
+(function() {
+  const hamburger  = document.getElementById('navHamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (!hamburger || !mobileMenu) return;
+
+  function openMenu() {
+    document.body.classList.add('nav-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    /* body.nav-open CSS already prevents scroll — see: body.nav-open { overflow: hidden } */
+  }
+
+  function closeMenu() {
+    document.body.classList.remove('nav-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+  }
+
+  hamburger.addEventListener('click', () => {
+    document.body.classList.contains('nav-open') ? closeMenu() : openMenu();
+  });
+
+  /* Close menu when any mobile link is tapped */
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  /* Close on Escape key */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMenu();
+  });
+})();
+
+
+/* ════════════════════════════════════════════════
+   § FILE TOGGLE — Case file expand/collapse
+   Opens one file at a time (closes others first).
+   Accessible: updates aria-expanded on the button.
+════════════════════════════════════════════════ */
+function toggleFile(contentId, btn) {
+  const content = document.getElementById(contentId);
+  if (!content) return;
+  const isOpen = content.classList.contains('open');
+
+  /* Close all open files */
+  document.querySelectorAll('.file-content.open').forEach(fc => {
+    fc.classList.remove('open');
+    const b = fc.closest('.case-file') && fc.closest('.case-file').querySelector('.file-open-btn');
+    if (b) {
+      b.setAttribute('aria-expanded', 'false');
+      b.querySelector('.file-arrow').textContent = '+';
+      b.querySelector('span').textContent = 'Open';
+    }
+  });
+
+  /* If it was closed, open it */
+  if (!isOpen) {
+    content.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.querySelector('.file-arrow').textContent = '−';
+    btn.querySelector('span').textContent = 'Close';
+  }
+}
+
+
+/* ════════════════════════════════════════════════
+   § INIT — Run data renders before GSAP
+   Journey and Work sections are empty in the HTML.
+   We populate them with JS before animations run,
+   so ScrollTrigger can measure the correct heights.
+════════════════════════════════════════════════ */
+renderJourney();
+renderWork();
+
+
+/* ════════════════════════════════════════════════
+   § WAIT FOR GSAP
+   GSAP is loaded with `defer` so it may not be
+   ready immediately. We poll until it's available.
+════════════════════════════════════════════════ */
+function waitForGSAP(fn) {
+  if (window.gsap && window.ScrollTrigger) { fn(); }
+  else { setTimeout(() => waitForGSAP(fn), 50); }
+}
+
+
+/* ════════════════════════════════════════════════
+   § GSAP ANIMATION SUITE
+════════════════════════════════════════════════ */
+waitForGSAP(function() {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+
+  /* ── LOADER ──────────────────────────────────
+     Simulates page load with a progress bar.
+     Animates the letter characters out individually
+     (staggered slide-up) then fades the overlay.
+     Once gone, initHero() fires the hero entrance.
+  ─────────────────────────────────────────────── */
+  const loaderBar   = document.getElementById('loaderBar');
+  const loaderCount = document.getElementById('loaderCount');
+  const loader      = document.getElementById('loader');
+
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct = Math.min(pct + Math.random() * 14, 100);
+    loaderBar.style.width     = pct + '%';
+    loaderCount.textContent   = Math.floor(pct) + '%';
+
+    if (pct >= 100) {
+      clearInterval(interval);
+      const chars = loader.querySelectorAll('.loader-name span');
+      gsap.to(chars, { y: '-110%', stagger: 0.05, duration: 0.6, ease: 'power3.in', delay: 0.2 });
+      gsap.to(loader, {
+        opacity: 0, duration: 0.6, delay: 0.8, ease: 'power2.inOut',
+        onComplete: () => { loader.style.display = 'none'; initHero(); }
+      });
+    }
+  }, 40);
+
+
+  /* ── HERO ENTRANCE ───────────────────────────
+     Staggered sequence:
+     1. Name words slide up from below their clip mask
+     2. Eyebrow label fades in
+     3. Tagline fades in
+     4. CTA buttons fade in
+     5. Scroll indicator fades in
+
+     After entrance, name + portrait move on a parallax
+     track (portrait moves faster = depth illusion).
+  ─────────────────────────────────────────────── */
+  function initHero() {
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.to('#heroName .word span', { y: '0%', duration: 1.2, stagger: 0.15 })
+      .to('#heroEyebrow', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+      .to('#heroTagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+      .to('#heroCtaRow',  { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+      .to('#heroScroll',  { opacity: 1, duration: 0.8 }, '-=0.2');
+
+    /* Parallax: portrait moves 25% of scroll distance (faster, feels closer) */
+    gsap.to('#heroPortrait', {
+      y: '25%', ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+    });
+
+    /* Name moves 15% of scroll distance (slower, feels further back) */
+    gsap.to('#heroName', {
+      y: '15%', ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 }
+    });
+  }
+
+
+  /* ── NEWSPAPER UNFOLD ────────────────────────
+     The newspaper starts folded away: rotateX(-85deg) + scaleY(0.2).
+     As the About section enters the viewport, it unfolds to flat.
+     When scrolling past, it folds forward and exits.
+     When scrolling back up, it unfolds again cleanly.
+
+     The perspective CSS on .newspaper-wrap parent is what makes
+     rotateX look like a physical 3D fold rather than a squash.
+  ─────────────────────────────────────────────── */
+  ScrollTrigger.create({
+    trigger: '#about',
+    start: 'top 80%',
+    end: 'bottom 20%',
+    onEnter:     () => gsap.to('#newspaper', { rotateX: 0, scaleY: 1, opacity: 1, duration: 1.4, ease: 'power3.out' }),
+    onLeave:     () => gsap.to('#newspaper', { rotateX: 85, scaleY: 0.1, opacity: 0, duration: 1, ease: 'power3.in' }),
+    onEnterBack: () => gsap.to('#newspaper', { rotateX: 0, scaleY: 1, opacity: 1, duration: 1.2, ease: 'power3.out' }),
+    onLeaveBack: () => gsap.to('#newspaper', { rotateX: -85, scaleY: 0.2, opacity: 0, duration: 1, ease: 'power3.in' })
+  });
+
+
+  /* ── TIMELINE ITEMS ──────────────────────────
+     Items slide in from alternating sides as they
+     enter the viewport. Reversed when scrolling back up.
+  ─────────────────────────────────────────────── */
+  document.querySelectorAll('.timeline-item').forEach((item, i) => {
+    const fromLeft = i % 2 === 0;
+    gsap.fromTo(item,
+      { opacity: 0, x: fromLeft ? -60 : 60, y: 30 },
+      { opacity: 1, x: 0, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: item, start: 'top 80%', toggleActions: 'play none none reverse' }
+      }
+    );
+  });
+
+
+  /* ── CASE FILES ──────────────────────────────
+     Each case file rises and de-tilts as it enters
+     the viewport. The rotationX adds a subtle 3D
+     lift — like picking up a physical folder.
+  ─────────────────────────────────────────────── */
+  document.querySelectorAll('.case-file').forEach((file) => {
+    gsap.fromTo(file,
+      { opacity: 0, y: 60, rotationX: -8 },
+      { opacity: 1, y: 0, rotationX: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: file, start: 'top 85%', toggleActions: 'play none none reverse' }
+      }
+    );
+  });
+
+
+  /* ── SERVICE CARDS ───────────────────────────
+     Cards stagger in pairs as the grid enters view.
+     delay: (i % 2) * 0.15 means left/right cards
+     in each row animate in sequence, not simultaneously.
+  ─────────────────────────────────────────────── */
+  document.querySelectorAll('.service-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        delay: (i % 2) * 0.15,
+        scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
+      }
+    );
+  });
+
+
+  /* ── CONTACT ENTRANCE ────────────────────────
+     Headline animates up once. CTAs follow with delay.
+     once: true prevents re-animation on scroll-back.
+  ─────────────────────────────────────────────── */
+  ScrollTrigger.create({
+    trigger: '#contact',
+    start: 'top 70%',
+    once: true,
+    onEnter: () => {
+      gsap.from('.contact-headline', { y: 60, opacity: 0, duration: 1, ease: 'power3.out' });
+      gsap.from('.contact-subtext, .contact-cta', {
+        y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.15, delay: 0.3
+      });
+    }
+  });
+
+
+  /* ── SECTION HEADERS ─────────────────────────
+     Each section header's children (eyebrow + title)
+     stagger-fade upward when the header enters view.
+  ─────────────────────────────────────────────── */
+  document.querySelectorAll('.section-header').forEach(header => {
+    gsap.from(header.children, {
+      opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', stagger: 0.15,
+      scrollTrigger: { trigger: header, start: 'top 80%' }
+    });
+  });
+
+
+  /* ── SMOOTH ANCHOR SCROLLING ─────────────────
+     Intercepts all <a href="#..."> clicks and uses
+     GSAP ScrollToPlugin for a smooth, premium scroll
+     instead of the browser's default instant jump.
+     offsetY: 90 accounts for the fixed nav height.
+  ─────────────────────────────────────────────── */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        gsap.to(window, {
+          duration: 1.2,
+          scrollTo: { y: target, offsetY: 90 },
+          ease: 'power3.inOut'
+        });
+      }
+    });
+  });
+
+}); /* end waitForGSAP */
+</script>
+
+</body>
+</html>
