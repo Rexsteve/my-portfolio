@@ -1564,37 +1564,17 @@
   <!-- Grid overlay -->
   <div class="hero-grid-lines" aria-hidden="true"></div>
 
-  <!-- ══════════════════════════════════════════════════════════════
-       PORTRAIT — HOW TO ADD YOUR PHOTO:
-       ──────────────────────────────────────────────────────────────
-       When you have a professional portrait ready:
-
-       1. Place your image file in the same folder as this HTML.
-          Recommended filename: stephen-portrait.jpg
-          Recommended size: 800px wide × 1100px tall (or taller)
-          Preferred style: dark or neutral background, upper-body shot
-
-       2. Replace the entire <div class="portrait-placeholder"> block
-          below with this single <img> tag:
-
-          <img
-            src="stephen-portrait.jpg"
+ <!-- <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
+    <div class="portrait-placeholder" role="img" aria-label="Portrait of Stephen Otieno — photo coming soon"></div>
+  </div>   --> 
+  <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
+      <img
+            src="stephen-portrait.png"
             alt="Portrait of Stephen Otieno"
             class="hero-portrait-img"
             loading="eager"
           />
-
-       3. The .hero-portrait-img class already has the right CSS:
-          object-fit: cover; object-position: top center;
-          grayscale(20%) contrast(1.05) — remove the filter if you
-          prefer full colour.
-
-       Until then, the CSS gradient silhouette below serves as a
-       dignified, on-brand placeholder.
-  ══════════════════════════════════════════════════════════════ -->
-  <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
-    <div class="portrait-placeholder" role="img" aria-label="Portrait of Stephen Otieno — photo coming soon"></div>
-  </div>
+  </div> 
 
   <!-- Text content -->
   <div class="hero-content">
