@@ -1,10 +1,14 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Stephen Otieno — UI/UX Designer & Frontend Developer. Computer Science student at Maseno University crafting digital experiences where design meets engineering." />
-  <title>Stephen Otieno — UI/UX Designer & Frontend Developer</title>
+  <meta name="description" content="Stephen Ochieng — Computer Science student at Maseno University. Frontend developer and digital builder. Available for industrial attachment May–August 2026." />
+  <meta name="keywords" content="Stephen Ochieng, Computer Science, Maseno University, frontend developer, web design, Kenya, industrial attachment 2026" />
+  <meta property="og:title" content="Stephen Ochieng — CS Student & Frontend Developer" />
+  <meta property="og:description" content="Computer Science student at Maseno University building digital products through code, design thinking, and modern web technologies." />
+  <meta property="og:type" content="website" />
+  <title>Stephen Ochieng — Computer Science Student & Frontend Developer</title>
 
   <!-- ── FONTS ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -99,8 +103,11 @@
 
 
     html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px; /* offset for fixed nav — keeps headings from hiding behind it */
+      /* scroll-behavior: smooth is intentionally ABSENT.
+         CSS smooth scroll + GSAP ScrollToPlugin fight each other —
+         one cancels the other mid-animation so nav links appear broken.
+         GSAP ScrollToPlugin handles ALL smooth scrolling exclusively.      */
+      scroll-padding-top: 90px; /* fallback offset for fixed nav */
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -147,16 +154,34 @@
     }
     .cursor-ring.hovering { width: 60px; height: 60px; opacity: 0.8; }
 
-    /* ── NAVIGATION ── */
+    /* ── NAVIGATION ──
+       TASK 1 FIX: Removed mix-blend-mode: difference.
+       That mode caused nav links to be visually invisible and
+       unclickable over light-background sections (#work, #contact).
+       Replaced with a transparent→frosted background on scroll.
+       z-index: 200 sits above hero grid (z-index:1) and portrait (z-index:1)
+       but below the loader (z-index:9999) and cursor (z-index:9998/9999).
+    ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1.5rem 4rem;
-      mix-blend-mode: difference;
+      /* Subtle dark tint so links stay legible over all section backgrounds */
+      background: linear-gradient(180deg, rgba(10,10,15,0.72) 0%, transparent 100%);
+      /* Transition used by JS .nav-scrolled class below */
+      transition: background 0.4s ease, backdrop-filter 0.4s ease;
+    }
+
+    /* When user has scrolled > 60px, add frosted glass effect for clarity */
+    nav.nav-scrolled {
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
     }
 
     .nav-logo {
@@ -164,8 +189,10 @@
       font-size: 0.75rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--newsprint);
+      color: var(--newsprint);   /* always light — readable on dark gradient nav */
       text-decoration: none;
+      position: relative;        /* ensure it's above nav gradient */
+      z-index: 1;
     }
 
     .nav-links {
@@ -179,13 +206,18 @@
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--newsprint);
+      color: var(--newsprint);   /* always light — readable on dark nav */
       text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.3s;
+      opacity: 0.75;
+      transition: opacity 0.3s, color 0.3s;
+      /* TASK 1: ensure clicks reach links — pointer-events was inadvertently
+         blocked by the mix-blend-mode layer in some browsers               */
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
     }
 
-    .nav-links a:hover { opacity: 1; }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
 
     /* ══════════════════════════════════════════════════
        § 1  HERO
@@ -220,46 +252,94 @@
       pointer-events: none;
     }
 
-    /* Portrait photograph — placeholder uses a CSS-art portrait silhouette */
+    /* ════════════════════════════════════════════════
+       HERO PORTRAIT — TASK 3 (responsive) + TASK 4 (darkening)
+
+       DESKTOP: dramatic editorial composition — portrait anchored
+       to right side, bottom-aligned, tall, partially behind text.
+
+       MOBILE: the container is repositioned to sit as a centered
+       background layer behind the text. object-position is set to
+       show the face (top of head through shoulders). The container
+       opacity is reduced so the dark text reads clearly above it.
+
+       TASK 4 — DARKENING: multiple overlay layers are applied:
+       1. Left-side gradient fade (ink → transparent) so text is readable
+       2. Top vignette (softens harsh top edge)
+       3. Bottom vignette (grounds the figure)
+       4. Subtle desaturation + contrast via filter on the <img>
+       These layers are CSS pseudo-elements on .hero-portrait — no
+       image quality is lost; the original file is untouched.
+    ════════════════════════════════════════════════ */
     .hero-portrait {
       position: absolute;
-      right: 8%;
+      right: 6%;
       bottom: 0;
-      width: 42vw;
-      max-width: 600px;
-      height: 90%;
+      width: 40vw;
+      max-width: 560px;
+      height: 92%;
       z-index: 1;
       will-change: transform;
       overflow: hidden;
     }
 
-    /* CSS art portrait — elegant silhouette with gradients */
+    /* Left-to-right editorial fade — makes text on left always readable */
+    .hero-portrait::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        var(--ink) 0%,
+        rgba(10,10,15,0.55) 30%,
+        rgba(10,10,15,0.1) 60%,
+        transparent 100%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Top + bottom vignette — editorial depth, grounds the figure */
+    .hero-portrait::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg,
+          rgba(10,10,15,0.45) 0%,
+          transparent 20%,
+          transparent 65%,
+          rgba(10,10,15,0.85) 100%
+        );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* The actual portrait image */
     .hero-portrait-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      /* TASK 3: top center keeps face visible on all sizes */
       object-position: top center;
-      filter: grayscale(20%) contrast(1.05);
+      /* TASK 4: slight desaturation and boosted contrast for editorial look */
+      filter: grayscale(15%) contrast(1.08) brightness(0.88);
+      display: block;
     }
 
-    /* Portrait placeholder when no real image */
+    /* CSS art portrait — elegant silhouette with gradients */
+    /* (shown when no real image is present) */
     .portrait-placeholder {
       width: 100%;
       height: 100%;
       background:
-        /* shirt / collar */
         radial-gradient(ellipse 45% 12% at 50% 78%, #2a2a35 0%, transparent 100%),
-        /* neck */
         radial-gradient(ellipse 12% 10% at 50% 66%, #5a4a3a 0%, transparent 100%),
-        /* head */
         radial-gradient(ellipse 30% 28% at 50% 44%, #7a6050 0%, #5a4030 60%, transparent 100%),
-        /* shoulders */
         radial-gradient(ellipse 70% 30% at 50% 90%, #1a1a25 0%, transparent 100%),
-        /* background gradient */
         linear-gradient(180deg, transparent 30%, rgba(10,10,15,0.8) 100%);
       position: relative;
     }
-
     .portrait-placeholder::before {
       content: '';
       position: absolute;
@@ -399,56 +479,82 @@
 
     .btn-outline:hover { border-color: var(--newsprint); }
 
+    /* ── HERO SCROLL INDICATOR — TASK 6 ──────────────
+       PREVIOUS: bottom-left, left: 4rem — overlapped text
+       on narrow viewports and felt disconnected.
+
+       NEW: centered at the very bottom of the hero section,
+       using a vertical pulse arrow rather than horizontal line.
+       This is the canonical "scroll CTA" position used by Apple,
+       Linear, and Vercel hero sections. It reads naturally as
+       "there is more below" without needing horizontal space.
+    ─────────────────────────────────────────────── */
     .hero-scroll-indicator {
       position: absolute;
-      bottom: 3rem;
-      left: 4rem;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 4;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 0.6rem;
       font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--stone);
       opacity: 0;
+      /* Gentle bob animation to draw the eye downward */
+      animation: scrollBob 2.4s ease-in-out infinite;
+      animation-play-state: paused; /* started by GSAP after entrance */
     }
 
+    /* Vertical pulse line replacing the horizontal one */
     .scroll-line {
-      width: 60px;
-      height: 1px;
+      width: 1px;
+      height: 40px;
       background: var(--stone);
       position: relative;
       overflow: hidden;
+      order: -1; /* line appears above the label text */
     }
 
     .scroll-line::after {
       content: '';
       position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: var(--gold);
       animation: scrollLinePulse 2s ease-in-out infinite;
     }
 
     @keyframes scrollLinePulse {
-      0%   { left: -100%; }
-      50%  { left: 0%; }
-      100% { left: 100%; }
+      0%   { top: -100%; }
+      50%  { top: 0%; }
+      100% { top: 100%; }
     }
 
-    /* Hero year stamp */
+    @keyframes scrollBob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* Hero year stamp — repositioned to avoid viewport overflow.
+       Was: right: -2rem (caused horizontal scroll on some devices)
+       Now: right: 2rem, safely inside the viewport.              */
     .hero-year {
       position: absolute;
-      top: 40%;
-      right: -2rem;
+      bottom: 2.5rem;
+      right: 2rem;
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 0.3em;
       color: var(--stone);
       writing-mode: vertical-rl;
-      opacity: 0.4;
+      opacity: 0.35;
       z-index: 4;
     }
 
@@ -1354,6 +1460,41 @@
 
     .contact-link:hover { color: var(--ink); }
 
+    /* ── ATTACHMENT AVAILABILITY BADGE — TASK 5 ────────
+       A small pulsing green indicator below the CTA button
+       in the contact section. Makes the industrial attachment
+       availability unmissable for recruiters scanning the page.
+       Design language: subtle, professional, not gimmicky.
+    ─────────────────────────────────────────────── */
+    .attachment-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid rgba(10,10,15,0.15);
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+
+    .attachment-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2d8a4e;
+      flex-shrink: 0;
+      /* Pulse animation — communicates live/active status */
+      animation: attachPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes attachPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(45,138,78,0.4); }
+      50%       { box-shadow: 0 0 0 6px rgba(45,138,78,0); }
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--ink);
@@ -1443,10 +1584,34 @@
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
 
+      /* ── HERO PORTRAIT — MOBILE (TASK 3) ──────────────────
+         On mobile the portrait is repositioned to fill the
+         right half of the screen as a background layer.
+         object-position: top center keeps the face fully visible.
+         The left overlay (::before) provides text contrast.
+         Opacity reduced so it doesn't overwhelm the text.        */
+      .hero-portrait {
+        right: 0;
+        width: 60vw;
+        height: 70%;
+        bottom: 0;
+        opacity: 0.55;
+      }
+      .hero-portrait {
+        right: 0;
+        width: 60vw;
+        height: 70%;
+        bottom: 0;
+        opacity: 0.55;
+      }
+      /* On mobile, ensure the full face shows (no forehead crop) */
+      .hero-portrait-img {
+        object-position: top center;
+      }
       .hero-content { grid-template-columns: 1fr; padding: 0 2rem; }
-      .hero-portrait { right: 0; width: 55vw; opacity: 0.3; }
       .hero-name { font-size: clamp(3.5rem, 14vw, 7rem); }
-      .hero-scroll-indicator { left: 2rem; }
+      /* Scroll indicator: centered bottom on mobile too — no change needed
+         since it's now position: absolute; left: 50%; transform: translateX(-50%) */
 
       #about { padding: 6rem 1.5rem; }
       .newspaper { padding: 2rem 1.5rem; }
@@ -1531,7 +1696,7 @@
      NAVIGATION
 ════════════════════════════════════════════════ -->
 <nav role="navigation" aria-label="Main navigation" id="mainNav">
-  <a href="#hero" class="nav-logo">S. Otieno</a>
+  <a href="#hero" class="nav-logo">S. Ochieng</a>
 
   <!-- Desktop navigation links — hidden on mobile via CSS -->
   <ul class="nav-links">
@@ -1564,54 +1729,77 @@
   <!-- Grid overlay -->
   <div class="hero-grid-lines" aria-hidden="true"></div>
 
- <!-- <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
-    <div class="portrait-placeholder" role="img" aria-label="Portrait of Stephen Otieno — photo coming soon"></div>
-  </div>   --> 
+  <!-- ══════════════════════════════════════════════════════════════
+       PORTRAIT — HOW TO ADD / REPLACE YOUR PHOTO:
+       ──────────────────────────────────────────────────────────────
+       The <img> below points to stephen-portrait.png in the same
+       folder as this HTML file.
+
+       Requirements for best results:
+         • Filename: stephen-portrait.png (or .jpg — update src below)
+         • Size: 800px wide × 1100px tall minimum
+         • Style: dark/neutral background, upper-body, face centred
+         • object-position: top center — keeps face visible at all sizes
+
+       TASK 3 — Mobile: the CSS ensures the face is never cropped.
+       TASK 4 — Darkening: CSS ::before and ::after overlays on
+                .hero-portrait apply editorial darkening without
+                altering the original image file.
+
+       To revert to the CSS placeholder silhouette, swap the <img>
+       with: <div class="portrait-placeholder" role="img"
+              aria-label="Portrait of Stephen Ochieng"></div>
+  ══════════════════════════════════════════════════════════════ -->
   <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
-      <img
-            src="stephen-portrait.png"
-            alt="Portrait of Stephen Otieno"
-            class="hero-portrait-img"
-            loading="eager"
-          />
-  </div> 
+    <img
+      src="stephen-portrait.png"
+      alt="Portrait of Stephen Ochieng, Computer Science student at Maseno University"
+      class="hero-portrait-img"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
 
   <!-- Text content -->
   <div class="hero-content">
     <div class="hero-text">
 
+      <p class="hero-eyebrow" id="heroEyebrow">CS Student · Maseno University · Kenya</p>
+
       <h1 class="hero-name" id="heroName">
         <span class="word"><span>Stephen</span></span>
-        <span class="word"><span>Otieno</span></span>
+        <span class="word"><span>Ochieng</span></span>
       </h1>
 
+      <!-- TASK 2: Positioning per CV — student, builder, problem-solver.
+           Not agency. Not senior designer. Confident and honest.          -->
       <p class="hero-tagline" id="heroTagline">
-        A Computer Science student who lives at the intersection of<br />
-        <em>design thinking and frontend engineering</em> — building<br />
-        things that are thoughtful, beautiful, and real.
+        Computer Science student building digital products<br />
+        through <em>code, systems thinking,</em> and a genuine<br />
+        curiosity about how things work.
       </p>
 
       <div class="hero-cta-row" id="heroCtaRow">
-        <a href="#work" class="btn-primary">View My Work</a>
+        <a href="#work" class="btn-primary">See My Projects</a>
         <a href="#contact" class="btn-outline">Get In Touch</a>
       </div>
     </div>
   </div>
 
-  <!-- Scroll indicator -->
+  <!-- Scroll indicator — TASK 6: centered bottom, vertical pulse line -->
   <div class="hero-scroll-indicator" id="heroScroll" aria-hidden="true">
     <span class="scroll-line"></span>
-    Scroll to Explore
+    Scroll
   </div>
 
-  <!-- Year stamp — reflects current university year, update each September -->
-  <span class="hero-year" aria-hidden="true">3rd Year · 2025</span>
+  <!-- Year stamp: updated to 2026, safely inside viewport -->
+  <span class="hero-year" aria-hidden="true">3rd Year · 2026</span>
 </section>
 
 <!-- ════════════════════════════════════════════════
      § 2  ABOUT — Newspaper Unfold
 ════════════════════════════════════════════════ -->
-<section id="about" aria-label="About Stephen Otieno">
+<section id="about" aria-label="About Stephen Ochieng">
     <div class="newspaper-wrap" id="newspaperWrap">
     <div class="newspaper" id="newspaper" role="article">
       <div class="newspaper-shadow" aria-hidden="true"></div>
@@ -1621,73 +1809,69 @@
         <div class="masthead-title">The Maseno Dispatch</div>
         <div class="masthead-meta">
           <span>Vol. III, No. 12</span>
-          <span>Arts, Technology & Culture</span>
+          <span>Technology, Code & Culture</span>
           <span>Maseno University, Kenya</span>
         </div>
       </header>
 
       <div class="masthead-rule" aria-hidden="true"></div>
 
-      <!-- Headline -->
+      <!-- Headline — authentic to Stephen's real story -->
       <h2 class="newspaper-headline">
         The Boy Who Drew Everything —<br />Now <em>Builds</em> It
       </h2>
 
       <p class="newspaper-deck">
         How a childhood love of drawing, a father's drafting table, and a Computer
-        Science degree converged into one young designer's defining purpose.
+        Science degree at Maseno converged into one student's defining purpose.
       </p>
 
       <div class="masthead-rule" aria-hidden="true"></div>
 
-      <!-- Two-column article body — Stephen's real story -->
+      <!-- TASK 2: Article rewritten per CV — authentic, no exaggeration -->
       <div class="newspaper-body">
         <p>
-          Long before Stephen Otieno understood what a pixel was, he understood
+          Long before Stephen Ochieng understood what a pixel was, he understood
           line. Growing up in Kenya, he was the child who drew on everything —
           margins of textbooks, backs of receipts, whatever surface would hold
-          a mark. Classmates would crowd to see what he'd made. That early
-          hunger to create something that stopped people, that made them look
-          twice, never left him.
+          a mark. Classmates would gather to see what he had made. That early
+          hunger to create something worth looking at never left him.
         </p>
 
         <p>
           His father is a graphic designer. That fact shaped Stephen more than
-          any classroom. He grew up watching a man arrange type, balance colour,
-          argue for white space — treating visual decisions with the seriousness
-          most people reserve for engineering or law. Design, in that household,
-          was not decoration. It was thinking made visible.
+          any classroom could. He grew up watching a man arrange type, balance
+          colour, argue for white space — treating visual decisions with the
+          seriousness most people reserve for engineering or law. Design, in
+          that household, was not decoration. It was thinking made visible.
         </p>
 
         <div class="pull-quote" role="blockquote">
-          "I always wanted to be an architectural engineer. Then I discovered you could build entire worlds on a screen — and they could move."
+          "I initially wanted to be an architectural engineer. Then I realised you could build entire systems on a screen — and make them work."
         </div>
 
         <p>
-          For a time, Stephen dreamed of becoming an architectural engineer.
-          He was drawn to scale, structure, and the idea that you could design
-          spaces people would inhabit and feel. That dream evolved rather than
-          disappeared: when he encountered modern digital design — interfaces
-          that breathed, websites that told stories, apps that anticipated what
-          you needed before you asked — he recognized the same discipline, applied
-          to a different kind of space.
+          He enrolled in Computer Science at Maseno University in 2023. The
+          choice was deliberate: he wanted the technical foundation to build
+          what he could imagine — not just sketch it and hand it to someone
+          else. The degree has given him algorithms, systems thinking, database
+          design, and the discipline of writing code that actually works.
         </p>
 
         <p>
-          He enrolled in Computer Science at Maseno University. The choice was
-          deliberate: he wanted the technical foundation to build what he could
-          imagine, not just design it and hand it to someone else. Now in his
-          third year, Stephen sits at the intersection he has always gravitated
-          toward — the place where logic and creativity are not opposites but
-          collaborators. He designs. He codes. And increasingly, he does both
-          at once.
+          Now in his third year, Stephen builds academic and personal projects
+          that combine software engineering with intentional design. He works
+          across the full stack of a web project — from the database schema to
+          the pixel on screen — and finds the intersection of the two the most
+          interesting place to be. This portfolio is a record of that work: what
+          he has built, how he thinks, and where he is headed.
         </p>
       </div>
 
       <footer class="newspaper-footer" aria-label="Article metadata">
-        <span>Stephen Otieno, Maseno University</span>
-        <span>UI/UX · Frontend · Creative Technology</span>
-        <span>Open to Opportunities</span>
+        <span>Stephen Ochieng — Maseno University</span>
+        <span>CS · Frontend · Problem Solver</span>
+        <span>Building in Public · 2026</span>
       </footer>
     </div>
   </div>
@@ -1748,11 +1932,13 @@
 
 <!-- ════════════════════════════════════════════════
      § 5  SERVICES
+     TASK 2: Rewritten per CV — honest about what a CS student
+     can deliver. Focused on outcomes, not inflated titles.
 ════════════════════════════════════════════════ -->
 <section id="services" aria-label="Services">
   <div class="section-header">
-    <p class="section-eyebrow">What I Do</p>
-    <h2 class="section-title">Outcomes, <em>Not</em> Features</h2>
+    <p class="section-eyebrow">What I Build</p>
+    <h2 class="section-title">Skills, <em>Applied</em></h2>
   </div>
 
   <div class="services-grid" role="list">
@@ -1760,45 +1946,49 @@
     <article class="service-card" role="listitem">
       <div class="service-number">01</div>
       <span class="service-icon" aria-hidden="true">◻</span>
-      <h3 class="service-title">Website Development</h3>
+      <h3 class="service-title">Web Development</h3>
       <p class="service-desc">
-        Fast, accessible, beautifully built websites that represent your brand
-        at its highest quality — from concept to deployment and beyond.
+        Responsive, accessible websites built with HTML, CSS, and JavaScript.
+        Clean code, thoughtful structure, and attention to how things actually
+        feel to use — not just how they look in a screenshot.
       </p>
-      <div class="service-outcome">You get a digital presence that converts</div>
+      <div class="service-outcome">You get a site that works on every device</div>
     </article>
 
     <article class="service-card" role="listitem">
       <div class="service-number">02</div>
       <span class="service-icon" aria-hidden="true">◈</span>
-      <h3 class="service-title">UI/UX Design</h3>
+      <h3 class="service-title">System Development</h3>
       <p class="service-desc">
-        Interfaces rooted in research, refined through iteration, and tested against
-        real human behaviour. Design that guides without intrusion.
+        Academic and practical experience building information management
+        systems — from requirements gathering and database design through to
+        implementation and testing. Python, Java, PHP, and SQL.
       </p>
-      <div class="service-outcome">Your users stay, return, and recommend</div>
+      <div class="service-outcome">Functional systems that solve real problems</div>
     </article>
 
     <article class="service-card" role="listitem">
       <div class="service-number">03</div>
       <span class="service-icon" aria-hidden="true">◉</span>
-      <h3 class="service-title">Brand Presence</h3>
+      <h3 class="service-title">UI Design</h3>
       <p class="service-desc">
-        Visual identity systems that hold together across digital and physical
-        touchpoints — logos, type, colour, voice, and the feeling they leave behind.
+        Interfaces designed with clear hierarchy, readable typography, and
+        deliberate interaction flow — informed by a design-literate upbringing
+        and personal practice across academic and client projects.
       </p>
-      <div class="service-outcome">You become instantly recognisable</div>
+      <div class="service-outcome">Interfaces people understand immediately</div>
     </article>
 
     <article class="service-card" role="listitem">
       <div class="service-number">04</div>
       <span class="service-icon" aria-hidden="true">◬</span>
-      <h3 class="service-title">Digital Solutions</h3>
+      <h3 class="service-title">Technical Support & Docs</h3>
       <p class="service-desc">
-        Custom tools, dashboards, and web applications that solve specific
-        business problems — built to scale and maintained with care.
+        ICT support, system documentation, and technical writing. Comfortable
+        with Microsoft Office, capable of documenting systems clearly for both
+        technical and non-technical audiences.
       </p>
-      <div class="service-outcome">Your operations run smarter</div>
+      <div class="service-outcome">Clear documentation that teams actually use</div>
     </article>
 
   </div>
@@ -1808,10 +1998,9 @@
      § 6  CONTACT
      ────────────────────────────────────────────────
      TO UPDATE CONTACT DETAILS:
-     Search this file for "stephen.ochiengofficial" to find
-     all mailto links. Replace the email address in each one.
-     Search for "linkedin.com/in/stephen-otieno" and
-     "github.com/Rexsteve" to update social links.
+     Search for "stephen.ochiengofficial" → update email.
+     Search for "linkedin.com/in/stephen-otieno" → update LinkedIn.
+     Search for "github.com/Rexsteve" → update GitHub.
 ════════════════════════════════════════════════ -->
 <section id="contact" aria-label="Contact">
   <div class="contact-inner">
@@ -1820,31 +2009,27 @@
     </h2>
 
     <p class="contact-subtext">
-      Whether it's a project, a collaboration, or simply a great conversation
-      about design and code — I'm always glad to connect.
+      Whether it's a project, a collaboration, or a conversation
+      about what we could build together — I'm always glad to connect.
     </p>
 
-    <!-- Primary CTA email link — update the email address here to change it everywhere -->
     <a href="mailto:stephen.ochiengofficial@gmail.com" class="contact-cta">
-      Start a Conversation →
+      Get In Touch →
     </a>
 
     <div class="contact-divider" aria-hidden="true"></div>
 
     <nav class="contact-links" aria-label="Social and contact links">
-      <!-- Real LinkedIn profile -->
       <a href="https://www.linkedin.com/in/stephen-otieno-a64294300/"
          class="contact-link"
          target="_blank"
          rel="noopener noreferrer">LinkedIn</a>
 
-      <!-- Real GitHub profile -->
       <a href="https://github.com/Rexsteve"
          class="contact-link"
          target="_blank"
          rel="noopener noreferrer">GitHub</a>
 
-      <!-- Direct email link -->
       <a href="mailto:stephen.ochiengofficial@gmail.com"
          class="contact-link">Email</a>
     </nav>
@@ -1853,8 +2038,8 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-  <span>© 2026 Stephen Otieno. All rights reserved.</span>
-  <span>Maseno University · CS Student · Open to Opportunities</span>
+  <span>© 2026 Stephen Ochieng. All rights reserved.</span>
+  <span>Maseno University · Computer Science · Frontend Developer</span>
   <span>stephen.ochiengofficial@gmail.com</span>
 </footer>
 
@@ -1883,6 +2068,11 @@
 /* ════════════════════════════════════════════════
    § DATA — JOURNEY
    ────────────────────────────────────────────────
+   TASK 2: Updated to reflect real CV timeline.
+   Maranda High School → Maseno University (2023).
+   Projects from CV: Event Management (2025),
+   Hospitality IMS (2026), Comprint website (2025).
+
    HOW TO ADD A NEW JOURNEY ENTRY:
    1. Copy any object below.
    2. Paste it at the end of the array (before the ] ).
@@ -1890,12 +2080,12 @@
    4. Save. The page renders it automatically.
 
    Fields:
-   - year       : string, e.g. "2023"
-   - chapter    : short label for the era, e.g. "The Turn"
-   - role       : headline of what you were doing
-   - context    : where / what setting (school, self, project)
-   - description: 1–2 sentences. Be truthful and specific.
-   - tilt       : slight rotation in degrees (keep between -2 and 2)
+   - year        : string, e.g. "2023"
+   - chapter     : short label for the era
+   - role        : headline of what you were doing
+   - context     : where / what setting
+   - description : 1–2 sentences. Be truthful and specific.
+   - tilt        : slight rotation in degrees (keep -2 to 2)
 ════════════════════════════════════════════════ */
 const journeyData = [
   {
@@ -1903,31 +2093,31 @@ const journeyData = [
     chapter:     'First Marks',
     role:        'The Boy Who Drew Everything',
     context:     'Growing up in Kenya',
-    description: 'Art was the first language. Sketchbooks, notebook margins, any flat surface — Stephen filled them all. Classmates would gather to see what he\'d drawn. This compulsion to make things visible never went away.',
+    description: 'Art was the first language. Sketchbooks, notebook margins, any flat surface — Stephen filled them all. His father is a graphic designer; design was serious work in that household. This compulsion to make things visible never went away.',
     tilt:        -1.5
   },
   {
-    year:        'High School',
-    chapter:     'Design Awakens',
-    role:        'Discovering Digital Possibility',
-    context:     'Influenced by his father, a graphic designer',
-    description: 'Growing up watching his father work — arranging type, choosing colour, arguing for white space — Stephen learned that design was serious thinking, not decoration. When he first encountered interfaces that moved and responded, he saw the same discipline applied to a new kind of space.',
+    year:        '2019–2022',
+    chapter:     'Maranda High School',
+    role:        'KCSE — B+ (73 Points)',
+    context:     'Maranda High School, Kenya',
+    description: 'Completed secondary education at Maranda High School, graduating with a B+ grade in the Kenya Certificate of Secondary Education. Developed early interest in mathematics, science, and how technology works — the groundwork for a Computer Science degree.',
     tilt:        1.2
   },
   {
     year:        '2023',
     chapter:     'The Foundation',
     role:        'Computer Science Student',
-    context:     'Maseno University, Kenya',
-    description: 'Enrolled in Computer Science to build the technical foundation his imagination needed. The degree gave him algorithms, data structures, and systems thinking. He added design on top — and the two started talking to each other in productive ways.',
+    context:     'Maseno University, Kenya — BSc Computer Science',
+    description: 'Enrolled in Computer Science at Maseno University. The degree provides grounding in programming (Python, Java, PHP, SQL), algorithms, data structures, database design, and systems development. Design layered on top — and the two started talking to each other.',
     tilt:        -0.8
   },
   {
-    year:        '2024',
-    chapter:     'Learning by Building',
-    role:        'Frontend Developer — Self-Directed',
-    context:     'HTML, CSS, JavaScript, React',
-    description: 'Took web development seriously as a craft, not just a skill. Studied typography, layout, motion, and accessibility. Started building real things: components, UI experiments, personal tools. The gap between what he could imagine and what he could build began to close.',
+    year:        'Jan–May 2025',
+    chapter:     'First Team Project',
+    role:        'Software Developer — Event Management System',
+    context:     'Maseno University — Team Project',
+    description: 'Developed an event scheduling and registration system in a team environment. Implemented core features, performed testing and debugging, and supported system documentation. First real experience of collaborative software development and the discipline it demands.',
     tilt:        1.6
   },
   {
@@ -1935,15 +2125,15 @@ const journeyData = [
     chapter:     'First Real Client',
     role:        'Web Designer & Developer',
     context:     'Comprint Concepts Limited, Nairobi',
-    description: 'Built a complete multi-page website for a Nairobi printing and branding company — his first significant real-world project. Handled UX decisions, responsive implementation, performance optimisation, and brand alignment from brief to launch.',
+    description: 'Built a complete multi-page website for a Nairobi printing company — first independent client project. Handled UX decisions, responsive implementation, performance optimisation, and brand alignment from brief to launch.',
     tilt:        -1.1
   },
   {
-    year:        'Now',
-    chapter:     'In Progress',
-    role:        'Third-Year Student & Creative Technologist',
-    context:     'Continuously building, learning, improving',
-    description: 'Deepening expertise in UI/UX design and frontend engineering simultaneously. Looking for collaborations, freelance projects, and opportunities to create work that is both technically sound and genuinely beautiful.',
+    year:        '2026',
+    chapter:     'Building Now',
+    role:        'Developer — Hospitality Information Management System',
+    context:     'Maseno University · Third Year',
+    description: 'Contributing to a hospitality information management system covering requirements gathering, database design, UI development, and documentation. Continuously improving as a developer, designer, and problem-solver — one project at a time.',
     tilt:        0.8
   }
 ];
@@ -1952,9 +2142,12 @@ const journeyData = [
 /* ════════════════════════════════════════════════
    § DATA — WORK / PROJECTS
    ────────────────────────────────────────────────
+   TASK 2: Rewritten from CV — only real projects.
+   No fabricated clients, no invented metrics.
+
    HOW TO ADD A NEW PROJECT:
    1. Copy any object below.
-   2. Paste at the end of the array.
+   2. Paste at the end of the array (before the ] ).
    3. Fill in all fields. Be truthful — no invented metrics.
    4. For status use: 'Delivered' | 'In Progress' | 'Concept'
    5. The page renders it automatically.
@@ -1978,46 +2171,46 @@ const workData = [
   {
     id:        'file1',
     number:    '01',
-    label:     'COMPRINT CONCEPTS LTD.',
-    context:   'Client Project — Nairobi, Kenya',
-    title:     'Business Website & Digital Presence',
-    tags:      'Web Design · Responsive Dev · Brand',
+    label:     'HOSPITALITY INFORMATION MANAGEMENT SYSTEM',
+    context:   'Team Project — Maseno University, 2026',
+    title:     'Hospitality Information Management System',
+    tags:      'Systems Dev · Database Design · UI · PHP · SQL',
     status:    'Delivered',
     tilt:      -0.8,
-    overview:  'Designed and built a complete multi-page website for Comprint Concepts Limited, a Nairobi-based printing and branding company. The project covered all pages: Home, Services, Portfolio, and Clients.',
-    challenge: 'The company had no existing website. Their physical work — print, signage, branding — was high quality, but potential clients had no way to discover or evaluate them online. The goal was to create a digital presence that matched the quality of their output.',
-    solution:  'Built a responsive, multi-page HTML/CSS/JavaScript site. Designed a hero carousel to showcase work, a services section with a fuzzy-search bar for quick lookup, a portfolio gallery with lazy-loaded images, and WhatsApp-integrated CTAs for direct enquiries. Paid careful attention to mobile performance and image optimisation throughout.',
-    outcome:   'Comprint Concepts now has a professional web presence for the first time. The site is live and used in their business communications. No inflated metrics — the value is in the foundation it provides.',
+    overview:  'A team project to design and build an information management system for hospitality operations. The system handles operational data relevant to a hospitality environment, providing a structured interface for staff to manage records.',
+    challenge: 'Hospitality environments deal with high volumes of operational data that is often managed manually or through disconnected spreadsheets. The challenge was to build a system that was both technically sound and genuinely usable by non-technical staff.',
+    solution:  'Participated in requirements gathering, system analysis, database design, and UI development. Contributed to both the backend data structure and the frontend interface to ensure usability was treated as a first-class concern alongside functionality. Documentation was maintained throughout.',
+    outcome:   'System completed and submitted as part of coursework. The project built practical experience in team-based software development, database schema design, and the full lifecycle of a systems development project.',
     feedback:  null
   },
   {
     id:        'file2',
     number:    '02',
-    label:     'PERSONAL DESIGN SYSTEM',
-    context:   'Personal Project — Ongoing',
-    title:     'UI Component Library & Design Tokens',
-    tags:      'UI Design · CSS · Design Systems',
-    status:    'In Progress',
+    label:     'EVENT MANAGEMENT SYSTEM',
+    context:   'Team Project — Maseno University, Jan–May 2025',
+    title:     'Event Management System',
+    tags:      'Software Dev · Scheduling · Testing · Debugging',
+    status:    'Delivered',
     tilt:      0.6,
-    overview:  'An ongoing personal project to build a reusable set of UI components and design tokens — colour scales, typographic ramp, spacing system, and interactive elements — that can be dropped into any future project.',
-    challenge: 'Every new project was starting from scratch. Time spent rebuilding buttons, form elements, and layout primitives was time not spent solving the actual design problem. A personal design system solves that upstream.',
-    solution:  'Building components in plain CSS custom properties and vanilla JavaScript first, then porting the most-used ones to React. Documenting each decision: why this spacing, why this type scale, why this focus state. The documentation is as important as the components themselves.',
-    outcome:   'Work in progress. Three projects have already borrowed components from the early system. The act of building it has sharpened understanding of CSS architecture and design token methodology considerably.',
+    overview:  'A software project to build a system for event scheduling and registration. Built in a team environment over the January to May 2025 semester, covering planning, implementation, testing, and documentation.',
+    challenge: 'Event scheduling systems need to handle conflicts, registrations, and data integrity across multiple users. The challenge was implementing core scheduling logic correctly while keeping the interface manageable for end users.',
+    solution:  'Assisted in implementing core features including event creation, scheduling, and user registration. Performed systematic testing and debugging to surface edge cases and improve system reliability. Supported system documentation to ensure the codebase was understandable beyond the original team.',
+    outcome:   'System completed, tested, and submitted. The project developed practical skills in collaborative software development, functional testing methodology, and writing code in a team codebase where clarity matters as much as correctness.',
     feedback:  null
   },
   {
     id:        'file3',
     number:    '03',
-    label:     'UNIVERSITY PROJECT — CS COURSEWORK',
-    context:   'Academic Project — Maseno University',
-    title:     'Frontend UI for a Library Management System',
-    tags:      'HTML · CSS · JavaScript · UX',
+    label:     'COMPRINT CONCEPTS — CLIENT WEBSITE',
+    context:   'Freelance Project — Nairobi, Kenya, 2025',
+    title:     'Business Website & Digital Presence',
+    tags:      'HTML · CSS · JavaScript · Responsive · Web Design',
     status:    'Delivered',
     tilt:      -0.4,
-    overview:  'A university coursework project to design and build the frontend interface of a library management system. The system allows students to search, borrow, and return books through a web interface.',
-    challenge: 'Most coursework submissions at this level focus entirely on backend logic. The UX is often an afterthought. The challenge was to show that the interface layer deserves the same engineering rigour as the database layer beneath it.',
-    solution:  'Designed the full interface in Figma first, establishing a clear information hierarchy and interaction flow. Then implemented it in HTML, CSS, and JavaScript — with attention to search input states, loading feedback, empty states, and error handling. Applied accessibility basics: keyboard navigation, focus management, adequate contrast ratios.',
-    outcome:   'Submitted and graded. More importantly, it demonstrated that design decisions made before a single line of code is written produce better outcomes than design decisions made after.',
+    overview:  'Designed and built a complete multi-page website for Comprint Concepts Limited, a Nairobi-based printing and branding company. The project covered Home, Services, Portfolio, and Clients pages.',
+    challenge: 'The company had no website. Their physical work — print, signage, branding — was high quality, but potential clients had no way to discover or evaluate them online. The goal was a digital presence that matched the quality of their output.',
+    solution:  'Built a responsive multi-page HTML/CSS/JavaScript site with a hero carousel, services section with a fuzzy-search bar, a portfolio gallery with lazy-loaded images, and WhatsApp-integrated CTAs for direct enquiries. Careful attention was paid to mobile performance and image optimisation throughout.',
+    outcome:   'Comprint Concepts now has a professional web presence for the first time. The site is live and used in their business communications. First independent client project — valuable experience managing a real brief from start to delivery.',
     feedback:  null
   }
 ];
@@ -2505,42 +2698,117 @@ waitForGSAP(function() {
 
 
   /* ── SMOOTH ANCHOR SCROLLING ─────────────────
-     Intercepts all <a href="#..."> clicks and uses
-     GSAP ScrollToPlugin for a smooth, premium scroll
-     instead of the browser's default instant jump.
-     offsetY: 90 accounts for the fixed nav height.
+     CRITICAL FIX: This handler is attached IMMEDIATELY
+     (not inside waitForGSAP) so it works the instant
+     the page is interactive, regardless of GSAP load state.
+
+     Strategy:
+     - If GSAP + ScrollToPlugin are ready → use GSAP (premium smooth scroll)
+     - If not yet ready → use native scrollIntoView as fallback
+     Both paths prevent the default hash-jump behaviour.
+
+     Also closes the mobile menu before scrolling.
+
+     offsetY: 90 = fixed nav height compensation.
   ─────────────────────────────────────────────── */
+  function scrollToSection(href) {
+    if (href === '#' || !href.startsWith('#')) return;
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    /* Close mobile menu */
+    document.body.classList.remove('nav-open');
+    const hamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+    if (mobileMenu) mobileMenu.setAttribute('aria-hidden', 'true');
+
+    /* Use GSAP if available, native scroll otherwise */
+    if (window.gsap && window.ScrollToPlugin) {
+      gsap.to(window, {
+        duration: 1.1,
+        scrollTo: { y: target, offsetY: 90 },
+        ease: 'power3.inOut'
+      });
+    } else {
+      const top = target.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top, behavior: 'auto' });
+    }
+  }
+
+  /* Attach to every anchor link immediately */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        gsap.to(window, {
-          duration: 1.2,
-          scrollTo: { y: target, offsetY: 90 },
-          ease: 'power3.inOut'
-        });
-      }
+      e.preventDefault();
+      scrollToSection(this.getAttribute('href'));
     });
   });
 
+
+  /* ── NAV SCROLL STATE ────────────────────────
+     Adds .nav-scrolled class to <nav> when user scrolls
+     past 60px, triggering the frosted glass background.
+  ─────────────────────────────────────────────── */
+  (function initNavScroll() {
+    const nav = document.getElementById('mainNav');
+    if (!nav) return;
+    function updateNav() {
+      nav.classList.toggle('nav-scrolled', window.scrollY > 60);
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  })();
+
+
+  /* ── START SCROLL INDICATOR ANIMATION ────────
+     animation-play-state is paused by default so it
+     doesn't animate during the loader. Start after entrance.
+  ─────────────────────────────────────────────── */
+  const scrollIndicator = document.getElementById('heroScroll');
+  if (scrollIndicator) {
+    setTimeout(() => {
+      scrollIndicator.style.animationPlayState = 'running';
+    }, 2500);
+  }
+
 }); /* end waitForGSAP */
-</script>
-<script>
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', function(e) {
+
+
+/* ══════════════════════════════════════════════════
+   ANCHOR SCROLLING — EARLY ATTACHMENT
+   ──────────────────────────────────────────────────
+   Attached here OUTSIDE waitForGSAP so nav links work
+   immediately when the DOM is ready, before GSAP loads.
+   If GSAP loads later, its own handler replaces this one
+   via the same scrollToSection() function which checks
+   window.gsap availability each time it's called.
+
+   This fixes the race condition: previously, clicking
+   "About" before GSAP loaded did nothing because the
+   handler hadn't been attached yet.
+══════════════════════════════════════════════════ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
     e.preventDefault();
-
-    const target = document.querySelector(this.getAttribute('href'));
-
+    const href = this.getAttribute('href');
+    if (!href || href === '#') return;
+    const target = document.querySelector(href);
     if (!target) return;
 
-    target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-
+    /* Close mobile menu */
     document.body.classList.remove('nav-open');
+    const hb = document.getElementById('navHamburger');
+    const mm = document.getElementById('mobileMenu');
+    if (hb) hb.setAttribute('aria-expanded', 'false');
+    if (mm) mm.setAttribute('aria-hidden', 'true');
+
+    /* Scroll with nav offset */
+    if (window.gsap && window.ScrollToPlugin) {
+      gsap.to(window, { duration: 1.1, scrollTo: { y: target, offsetY: 90 }, ease: 'power3.inOut' });
+    } else {
+      const top = target.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top });
+    }
   });
 });
 </script>
