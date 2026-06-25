@@ -253,18 +253,6 @@
       fill: currentColor;
     }
 
-    /* Image-based social icons (swap when files are present) */
-    .social-btn img {
-      width: 18px;
-      height: 18px;
-      object-fit: contain;
-      filter: grayscale(1) brightness(0.7);
-      transition: filter 0.3s;
-    }
-    .social-btn:hover img {
-      filter: grayscale(0) brightness(1);
-    }
-
     /* ── Hero ── */
     #hero {
       position: relative;
@@ -1086,13 +1074,7 @@
       margin-bottom: 1.5rem;
       transition: color 0.4s;
     }
-    .service-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: block;
-      color: var(--newsprint);
-      transition: color 0.4s;
-    }
+
     .service-title {
       font-family: var(--font-display);
       font-size: 1.6rem;
@@ -1334,10 +1316,6 @@
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
-<!-- Social dock
-     Image swap guide:
-     Replace each <svg> with <img src="filename.ext" alt="..." />
-     Files: t_github9775.jpg · Linkedin Black.svg · email6505.logowik.com.webp -->
 <aside class="social-dock" aria-label="Social links">
   <a href="https://github.com/Rexsteve"
      class="social-btn"
@@ -1530,7 +1508,6 @@
   <div class="services-grid" role="list">
     <article class="service-card" role="listitem">
       <div class="service-number">01</div>
-      <span class="service-icon" aria-hidden="true">◻</span>
       <h3 class="service-title">Web Development</h3>
       <p class="service-desc">
         Responsive, accessible websites built with HTML, CSS, and JavaScript.
@@ -1542,7 +1519,6 @@
 
     <article class="service-card" role="listitem">
       <div class="service-number">02</div>
-      <span class="service-icon" aria-hidden="true">◈</span>
       <h3 class="service-title">System Development</h3>
       <p class="service-desc">
         Academic and practical experience building information management
@@ -1554,7 +1530,6 @@
 
     <article class="service-card" role="listitem">
       <div class="service-number">03</div>
-      <span class="service-icon" aria-hidden="true">◉</span>
       <h3 class="service-title">UI Design</h3>
       <p class="service-desc">
         Interfaces designed with clear hierarchy, readable typography, and
@@ -1566,7 +1541,6 @@
 
     <article class="service-card" role="listitem">
       <div class="service-number">04</div>
-      <span class="service-icon" aria-hidden="true">◬</span>
       <h3 class="service-title">Technical Support & Docs</h3>
       <p class="service-desc">
         ICT support, system documentation, and technical writing. Comfortable
@@ -1941,9 +1915,7 @@ waitForGSAP(function() {
   function initHero() {
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
     tl.to('#heroName .word span',  { y: '0%', duration: 1.2, stagger: 0.15 })
-      .to('#heroEyebrow',          { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
       .to('#heroTagline',          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-      .to('#heroAvailability',     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.4')
       .to('#heroCtaRow',           { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
       .to('#heroScroll',           { opacity: 1, duration: 0.8 }, '-=0.2');
 
