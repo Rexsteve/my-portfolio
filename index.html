@@ -3,111 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Stephen Ochieng — Computer Science student at Maseno University. Frontend developer and digital builder. Available for industrial attachment May–August 2026." />
-  <meta name="keywords" content="Stephen Ochieng, Computer Science, Maseno University, frontend developer, web design, Kenya, industrial attachment 2026" />
+  <meta name="description" content="Stephen Ochieng — Computer Science student at Maseno University. Frontend developer and digital builder." />
+  <meta name="keywords" content="Stephen Ochieng, Computer Science, Maseno University, frontend developer, web design, Kenya" />
   <meta property="og:title" content="Stephen Ochieng — CS Student & Frontend Developer" />
   <meta property="og:description" content="Computer Science student at Maseno University building digital products through code, design thinking, and modern web technologies." />
   <meta property="og:type" content="website" />
-  <title>Stephen Ochieng — Computer Science Student & Frontend Developer</title>
+  <meta property="og:url" content="https://stephenochieng.dev" />
+  <title>Stephen Ochieng — CS Student & Frontend Developer</title>
 
-  <!-- ── FONTS ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700;1,900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 
-  <!-- ── GSAP CDN ── -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js" defer></script>
 
   <style>
-    /* ════════════════════════════════════════════════════
-       DESIGN TOKENS
-       Palette: editorial ink, aged newsprint, tarnished
-       gold, blood red, warm stone
-    ════════════════════════════════════════════════════ */
+    /* Design tokens */
     :root {
-      --ink:        #0A0A0F;     /* deep editorial black  */
-      --newsprint:  #F2EDD7;     /* aged newsprint cream  */
-      --gold:       #C9A84C;     /* tarnished gold accent */
-      --crimson:    #8B1A1A;     /* editorial red mark    */
-      --stone:      #9E9585;     /* warm stone mid-tone   */
-      --smoke:      #E8E3D3;     /* light newsprint       */
-      --charcoal:   #2A2A35;     /* dark secondary        */
+      --ink:       #0A0A0F;
+      --newsprint: #F2EDD7;
+      --gold:      #C9A84C;
+      --crimson:   #8B1A1A;
+      --stone:     #9E9585;
+      --smoke:     #E8E3D3;
+      --charcoal:  #2A2A35;
 
       --font-display: 'Playfair Display', Georgia, serif;
       --font-body:    'EB Garamond', Georgia, serif;
       --font-mono:    'Space Mono', 'Courier New', monospace;
 
-      --ease-silk:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --ease-expo:  cubic-bezier(0.19, 1, 0.22, 1);
+      --ease-silk: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
     }
-
-    /* ── SCROLL PADDING — Offset fixed nav so anchor links land correctly ── */
-    /* The fixed nav is ~72px tall; scroll-padding-top ensures headings are
-       never hidden behind it when following a hash link.                     */
-
-    /* ── MOBILE NAV HAMBURGER ── */
-    /* On small screens the full nav-links are hidden; a hamburger button
-       replaces them. JS toggles the .nav-open class on <body> to reveal
-       the mobile menu overlay.                                               */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      background: none;
-      border: none;
-      cursor: none;
-      padding: 6px;
-    }
-    .nav-hamburger span {
-      display: block;
-      width: 22px;
-      height: 1px;
-      background: var(--newsprint);
-      transition: transform 0.3s, opacity 0.3s;
-    }
-    /* Animate hamburger bars into an X when menu is open */
-    body.nav-open .nav-hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    body.nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
-    body.nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-    /* Mobile dropdown overlay — sits above everything.
-       Shown when <body> has class .nav-open (added by JS hamburger toggle) */
-    .nav-mobile-menu {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--ink);
-      z-index: 99;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2.5rem;
-    }
-    /* body.nav-open shows the overlay */
-    body.nav-open .nav-mobile-menu { display: flex; }
-    /* Prevent page scroll while mobile menu is open */
-    body.nav-open { overflow: hidden; }
-    .nav-mobile-menu a {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 8vw, 3.5rem);
-      font-weight: 700;
-      color: var(--newsprint);
-      text-decoration: none;
-      opacity: 0.85;
-      transition: opacity 0.2s, color 0.2s;
-    }
-    .nav-mobile-menu a:hover { opacity: 1; color: var(--gold); }
-
-
 
     html {
-      /* scroll-behavior: smooth is intentionally ABSENT.
-         CSS smooth scroll + GSAP ScrollToPlugin fight each other —
-         one cancels the other mid-animation so nav links appear broken.
-         GSAP ScrollToPlugin handles ALL smooth scrolling exclusively.      */
-      scroll-padding-top: 90px; /* fallback offset for fixed nav */
+      scroll-padding-top: 90px;
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -118,16 +50,15 @@
       color: var(--newsprint);
       font-family: var(--font-body);
       overflow-x: hidden;
-      cursor: none; /* custom cursor — overridden to 'auto' on touch via JS */
+      cursor: none;
     }
 
-    /* On touch devices we restore the default cursor (JS adds .touch-device to body) */
     body.touch-device,
     body.touch-device * { cursor: auto !important; }
     body.touch-device .cursor,
     body.touch-device .cursor-ring { display: none; }
 
-    /* ── CUSTOM CURSOR ── */
+    /* ── Custom cursor ── */
     .cursor {
       position: fixed;
       top: 0; left: 0;
@@ -137,7 +68,7 @@
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s var(--ease-silk), width 0.3s, height 0.3s, background 0.3s;
+      transition: width 0.3s, height 0.3s, background 0.3s;
       mix-blend-mode: difference;
     }
     .cursor-ring {
@@ -149,19 +80,12 @@
       pointer-events: none;
       z-index: 9998;
       transform: translate(-50%, -50%);
-      transition: transform 0.18s var(--ease-silk), width 0.3s, height 0.3s, opacity 0.3s;
+      transition: width 0.3s, height 0.3s, opacity 0.3s;
       opacity: 0.5;
     }
     .cursor-ring.hovering { width: 60px; height: 60px; opacity: 0.8; }
 
-    /* ── NAVIGATION ──
-       TASK 1 FIX: Removed mix-blend-mode: difference.
-       That mode caused nav links to be visually invisible and
-       unclickable over light-background sections (#work, #contact).
-       Replaced with a transparent→frosted background on scroll.
-       z-index: 200 sits above hero grid (z-index:1) and portrait (z-index:1)
-       but below the loader (z-index:9999) and cursor (z-index:9998/9999).
-    ── */
+    /* ── Navigation ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -170,13 +94,10 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.5rem 4rem;
-      /* Subtle dark tint so links stay legible over all section backgrounds */
       background: linear-gradient(180deg, rgba(10,10,15,0.72) 0%, transparent 100%);
-      /* Transition used by JS .nav-scrolled class below */
       transition: background 0.4s ease, backdrop-filter 0.4s ease;
     }
 
-    /* When user has scrolled > 60px, add frosted glass effect for clarity */
     nav.nav-scrolled {
       background: rgba(10,10,15,0.88);
       backdrop-filter: blur(12px);
@@ -189,16 +110,15 @@
       font-size: 0.75rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--newsprint);   /* always light — readable on dark gradient nav */
+      color: var(--newsprint);
       text-decoration: none;
-      position: relative;        /* ensure it's above nav gradient */
-      z-index: 1;
     }
 
     .nav-links {
       display: flex;
       gap: 2.5rem;
       list-style: none;
+      margin: 0; padding: 0;
     }
 
     .nav-links a {
@@ -206,22 +126,146 @@
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--newsprint);   /* always light — readable on dark nav */
+      color: var(--newsprint);
       text-decoration: none;
       opacity: 0.75;
       transition: opacity 0.3s, color 0.3s;
-      /* TASK 1: ensure clicks reach links — pointer-events was inadvertently
-         blocked by the mix-blend-mode layer in some browsers               */
-      pointer-events: auto;
       position: relative;
-      z-index: 1;
+    }
+
+    /* Active section highlight */
+    .nav-links a.nav-active {
+      opacity: 1;
+      color: var(--gold);
+    }
+
+    .nav-links a.nav-active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
     }
 
     .nav-links a:hover { opacity: 1; color: var(--gold); }
 
-    /* ══════════════════════════════════════════════════
-       § 1  HERO
-    ══════════════════════════════════════════════════ */
+    /* Mobile hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--newsprint);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    body.nav-open .nav-hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    body.nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    body.nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* Mobile menu overlay */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    body.nav-open .nav-mobile-menu { display: flex; }
+    body.nav-open { overflow: hidden; }
+
+    .nav-mobile-menu a {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-weight: 700;
+      color: var(--newsprint);
+      text-decoration: none;
+      opacity: 0.85;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-mobile-menu a:hover { opacity: 1; color: var(--gold); }
+
+    /* ── Social dock ── */
+    .social-dock {
+      position: fixed;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    /* Vertical rule above and below */
+    .social-dock::before,
+    .social-dock::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(180deg, transparent, rgba(201,168,76,0.3));
+    }
+    .social-dock::after {
+      background: linear-gradient(180deg, rgba(201,168,76,0.3), transparent);
+    }
+
+    .social-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.25);
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--stone);
+      transition: border-color 0.3s, color 0.3s, transform 0.3s var(--ease-expo), background 0.3s;
+      cursor: pointer;
+    }
+
+    .social-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(10,10,15,0.9);
+      transform: scale(1.15) translateX(3px);
+    }
+
+    .social-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Image-based social icons (swap when files are present) */
+    .social-btn img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      filter: grayscale(1) brightness(0.7);
+      transition: filter 0.3s;
+    }
+    .social-btn:hover img {
+      filter: grayscale(0) brightness(1);
+    }
+
+    /* ── Hero ── */
     #hero {
       position: relative;
       height: 100vh;
@@ -232,7 +276,7 @@
       justify-content: center;
     }
 
-    /* Noise texture overlay for print feel */
+    /* Noise texture */
     #hero::before {
       content: '';
       position: absolute;
@@ -252,25 +296,6 @@
       pointer-events: none;
     }
 
-    /* ════════════════════════════════════════════════
-       HERO PORTRAIT — TASK 3 (responsive) + TASK 4 (darkening)
-
-       DESKTOP: dramatic editorial composition — portrait anchored
-       to right side, bottom-aligned, tall, partially behind text.
-
-       MOBILE: the container is repositioned to sit as a centered
-       background layer behind the text. object-position is set to
-       show the face (top of head through shoulders). The container
-       opacity is reduced so the dark text reads clearly above it.
-
-       TASK 4 — DARKENING: multiple overlay layers are applied:
-       1. Left-side gradient fade (ink → transparent) so text is readable
-       2. Top vignette (softens harsh top edge)
-       3. Bottom vignette (grounds the figure)
-       4. Subtle desaturation + contrast via filter on the <img>
-       These layers are CSS pseudo-elements on .hero-portrait — no
-       image quality is lost; the original file is untouched.
-    ════════════════════════════════════════════════ */
     .hero-portrait {
       position: absolute;
       right: 6%;
@@ -283,68 +308,33 @@
       overflow: hidden;
     }
 
-    /* Left-to-right editorial fade — makes text on left always readable */
+    /* Left editorial fade */
     .hero-portrait::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        90deg,
-        var(--ink) 0%,
-        rgba(10,10,15,0.55) 30%,
-        rgba(10,10,15,0.1) 60%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg, var(--ink) 0%, rgba(10,10,15,0.55) 30%, rgba(10,10,15,0.1) 60%, transparent 100%);
       z-index: 2;
       pointer-events: none;
     }
 
-    /* Top + bottom vignette — editorial depth, grounds the figure */
+    /* Top/bottom vignette */
     .hero-portrait::after {
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg,
-          rgba(10,10,15,0.45) 0%,
-          transparent 20%,
-          transparent 65%,
-          rgba(10,10,15,0.85) 100%
-        );
+      background: linear-gradient(180deg, rgba(10,10,15,0.45) 0%, transparent 20%, transparent 65%, rgba(10,10,15,0.85) 100%);
       z-index: 2;
       pointer-events: none;
     }
 
-    /* The actual portrait image */
     .hero-portrait-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      /* TASK 3: top center keeps face visible on all sizes */
       object-position: top center;
-      /* TASK 4: slight desaturation and boosted contrast for editorial look */
       filter: grayscale(15%) contrast(1.08) brightness(0.88);
       display: block;
-    }
-
-    /* CSS art portrait — elegant silhouette with gradients */
-    /* (shown when no real image is present) */
-    .portrait-placeholder {
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(ellipse 45% 12% at 50% 78%, #2a2a35 0%, transparent 100%),
-        radial-gradient(ellipse 12% 10% at 50% 66%, #5a4a3a 0%, transparent 100%),
-        radial-gradient(ellipse 30% 28% at 50% 44%, #7a6050 0%, #5a4030 60%, transparent 100%),
-        radial-gradient(ellipse 70% 30% at 50% 90%, #1a1a25 0%, transparent 100%),
-        linear-gradient(180deg, transparent 30%, rgba(10,10,15,0.8) 100%);
-      position: relative;
-    }
-    .portrait-placeholder::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, var(--ink) 0%, transparent 25%, transparent 75%, var(--ink) 100%);
     }
 
     .hero-grid-lines {
@@ -352,9 +342,7 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      background-image:
-        linear-gradient(var(--gold) 1px, transparent 1px),
-        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-image: linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px);
       background-size: 80px 80px;
       opacity: 0.04;
     }
@@ -370,29 +358,6 @@
       align-items: center;
     }
 
-    .hero-text { position: relative; }
-
-    .hero-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      opacity: 0;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 1px;
-      background: var(--gold);
-    }
-
     .hero-name {
       font-family: var(--font-display);
       font-weight: 900;
@@ -402,20 +367,15 @@
       color: var(--newsprint);
       overflow: hidden;
     }
-
-    /* Each word on its own line, staggered reveal */
     .hero-name .word {
       display: block;
       overflow: hidden;
       line-height: 1;
     }
-
     .hero-name .word span {
       display: block;
       transform: translateY(110%);
     }
-
-    /* "OTIENO" in crimson for contrast */
     .hero-name .word:last-child span {
       color: transparent;
       -webkit-text-stroke: 2px var(--newsprint);
@@ -436,7 +396,7 @@
       display: flex;
       align-items: center;
       gap: 2rem;
-      margin-top: 3rem;
+      margin-top: 2.5rem;
       opacity: 0;
     }
 
@@ -453,11 +413,10 @@
       text-transform: uppercase;
       text-decoration: none;
       border: none;
-      cursor: none;
+      cursor: pointer;
       transition: background 0.3s, transform 0.3s;
       font-weight: 700;
     }
-
     .btn-primary:hover { background: var(--newsprint); }
 
     .btn-outline {
@@ -473,22 +432,12 @@
       text-transform: uppercase;
       text-decoration: none;
       border: 1px solid rgba(242,237,215,0.3);
-      cursor: none;
+      cursor: pointer;
       transition: border-color 0.3s, color 0.3s;
     }
-
     .btn-outline:hover { border-color: var(--newsprint); }
 
-    /* ── HERO SCROLL INDICATOR — TASK 6 ──────────────
-       PREVIOUS: bottom-left, left: 4rem — overlapped text
-       on narrow viewports and felt disconnected.
-
-       NEW: centered at the very bottom of the hero section,
-       using a vertical pulse arrow rather than horizontal line.
-       This is the canonical "scroll CTA" position used by Apple,
-       Linear, and Vercel hero sections. It reads naturally as
-       "there is more below" without needing horizontal space.
-    ─────────────────────────────────────────────── */
+    /* Scroll indicator */
     .hero-scroll-indicator {
       position: absolute;
       bottom: 2.5rem;
@@ -505,21 +454,17 @@
       text-transform: uppercase;
       color: var(--stone);
       opacity: 0;
-      /* Gentle bob animation to draw the eye downward */
       animation: scrollBob 2.4s ease-in-out infinite;
-      animation-play-state: paused; /* started by GSAP after entrance */
+      animation-play-state: paused;
     }
-
-    /* Vertical pulse line replacing the horizontal one */
     .scroll-line {
       width: 1px;
       height: 40px;
       background: var(--stone);
       position: relative;
       overflow: hidden;
-      order: -1; /* line appears above the label text */
+      order: -1;
     }
-
     .scroll-line::after {
       content: '';
       position: absolute;
@@ -530,21 +475,16 @@
       background: var(--gold);
       animation: scrollLinePulse 2s ease-in-out infinite;
     }
-
     @keyframes scrollLinePulse {
       0%   { top: -100%; }
       50%  { top: 0%; }
       100% { top: 100%; }
     }
-
     @keyframes scrollBob {
       0%, 100% { transform: translateX(-50%) translateY(0); }
       50%       { transform: translateX(-50%) translateY(6px); }
     }
 
-    /* Hero year stamp — repositioned to avoid viewport overflow.
-       Was: right: -2rem (caused horizontal scroll on some devices)
-       Now: right: 2rem, safely inside the viewport.              */
     .hero-year {
       position: absolute;
       bottom: 2.5rem;
@@ -558,9 +498,7 @@
       z-index: 4;
     }
 
-    /* ══════════════════════════════════════════════════
-       § 2  ABOUT — Newspaper Unfold
-    ══════════════════════════════════════════════════ */
+    /* ── About ── */
     #about {
       position: relative;
       min-height: 100vh;
@@ -580,7 +518,6 @@
       pointer-events: none;
     }
 
-    /* The newspaper wrapper */
     .newspaper-wrap {
       position: relative;
       width: min(900px, 90vw);
@@ -588,7 +525,6 @@
       transform-style: preserve-3d;
     }
 
-    /* The newspaper itself */
     .newspaper {
       position: relative;
       background: var(--newsprint);
@@ -597,41 +533,32 @@
       transform-origin: top center;
       transform: rotateX(-85deg) scaleY(0.2);
       opacity: 0;
-      box-shadow:
-        0 40px 80px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(0,0,0,0.1),
-        inset 0 0 0 1px rgba(201,168,76,0.2);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(201,168,76,0.2);
       will-change: transform, opacity;
-
-      /* Paper texture via CSS */
       background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
         linear-gradient(180deg, #F5F0DB 0%, #EDE8CA 100%);
       background-blend-mode: multiply;
     }
 
-    /* Fold shadow lines on newspaper */
+    /* Fold lines */
     .newspaper::before {
       content: '';
       position: absolute;
-      left: 0; right: 0;
-      top: 50%;
+      left: 0; right: 0; top: 50%;
       height: 2px;
       background: linear-gradient(90deg, transparent, rgba(100,80,40,0.12) 20%, rgba(100,80,40,0.12) 80%, transparent);
       pointer-events: none;
     }
-
     .newspaper::after {
       content: '';
       position: absolute;
-      left: 0; right: 0;
-      top: 25%;
+      left: 0; right: 0; top: 25%;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(100,80,40,0.07) 20%, rgba(100,80,40,0.07) 80%, transparent);
       pointer-events: none;
     }
 
-    /* Paper edge shadow on left/right */
     .newspaper-shadow {
       position: absolute;
       inset: 0;
@@ -640,14 +567,12 @@
       z-index: 2;
     }
 
-    /* Masthead */
     .newspaper-masthead {
       text-align: center;
       border-bottom: 3px double rgba(10,10,15,0.4);
       padding-bottom: 1rem;
       margin-bottom: 0.5rem;
     }
-
     .masthead-title {
       font-family: var(--font-display);
       font-size: clamp(1.4rem, 3vw, 2.2rem);
@@ -656,7 +581,6 @@
       text-transform: uppercase;
       color: var(--ink);
     }
-
     .masthead-meta {
       font-family: var(--font-mono);
       font-size: 0.6rem;
@@ -667,7 +591,6 @@
       justify-content: center;
       gap: 2rem;
     }
-
     .masthead-rule {
       height: 1px;
       background: var(--ink);
@@ -675,7 +598,6 @@
       margin: 0.75rem 0;
     }
 
-    /* Headline */
     .newspaper-headline {
       font-family: var(--font-display);
       font-size: clamp(1.8rem, 4vw, 3.2rem);
@@ -686,11 +608,7 @@
       margin: 1.5rem 0;
       letter-spacing: -0.01em;
     }
-
-    .newspaper-headline em {
-      font-style: italic;
-      color: var(--crimson);
-    }
+    .newspaper-headline em { font-style: italic; color: var(--crimson); }
 
     .newspaper-deck {
       font-family: var(--font-body);
@@ -703,7 +621,6 @@
       line-height: 1.5;
     }
 
-    /* Two-column body text */
     .newspaper-body {
       column-count: 2;
       column-gap: 3rem;
@@ -715,7 +632,6 @@
       text-align: justify;
       hyphens: auto;
     }
-
     .newspaper-body p { margin-bottom: 0.75rem; }
     .newspaper-body p:first-child::first-letter {
       font-family: var(--font-display);
@@ -727,7 +643,6 @@
       color: var(--crimson);
     }
 
-    /* Pull quote */
     .pull-quote {
       break-inside: avoid;
       border-top: 2px solid var(--ink);
@@ -755,9 +670,7 @@
       color: var(--stone);
     }
 
-    /* ══════════════════════════════════════════════════
-       § 3  TIMELINE
-    ══════════════════════════════════════════════════ */
+    /* ── Timeline ── */
     #timeline {
       padding: 8rem 0;
       background: var(--ink);
@@ -793,12 +706,7 @@
       gap: 1rem;
       margin-bottom: 1rem;
     }
-
-    .section-eyebrow::before,
-    .section-eyebrow::after {
-      content: '—';
-      opacity: 0.5;
-    }
+    .section-eyebrow::before, .section-eyebrow::after { content: '—'; opacity: 0.5; }
 
     .section-title {
       font-family: var(--font-display);
@@ -807,11 +715,7 @@
       line-height: 1;
       letter-spacing: -0.02em;
     }
-
-    .section-title em {
-      font-style: italic;
-      color: var(--gold);
-    }
+    .section-title em { font-style: italic; color: var(--gold); }
 
     .timeline-grid {
       max-width: 1000px;
@@ -830,10 +734,9 @@
       opacity: 0;
       transform: translateY(40px);
     }
-
-    .timeline-item:nth-child(even) .clipping { order: 3; }
+    .timeline-item:nth-child(even) .clipping      { order: 3; }
     .timeline-item:nth-child(even) .timeline-dot-col { order: 2; }
-    .timeline-item:nth-child(even) .clipping-empty { order: 1; }
+    .timeline-item:nth-child(even) .clipping-empty   { order: 1; }
 
     .timeline-dot-col {
       display: flex;
@@ -841,14 +744,12 @@
       align-items: center;
       gap: 0.5rem;
     }
-
     .timeline-dot {
       width: 12px; height: 12px;
       border-radius: 50%;
       background: var(--gold);
       box-shadow: 0 0 0 4px rgba(201,168,76,0.15), 0 0 20px rgba(201,168,76,0.3);
     }
-
     .timeline-year-label {
       font-family: var(--font-mono);
       font-size: 0.65rem;
@@ -856,7 +757,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* Each clipping is a torn newspaper piece */
     .clipping {
       background: var(--smoke);
       color: var(--ink);
@@ -864,53 +764,39 @@
       position: relative;
       box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
       transform: rotate(var(--tilt, -1deg));
-      cursor: none;
       transition: transform 0.4s var(--ease-expo), box-shadow 0.4s;
+      cursor: default;
     }
-
     .clipping:hover {
       transform: rotate(0deg) translateY(-4px);
       box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
     }
-
-    /* Torn edge effect on bottom */
     .clipping::after {
       content: '';
       position: absolute;
-      bottom: -8px;
-      left: 0; right: 0;
+      bottom: -8px; left: 0; right: 0;
       height: 8px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='8'%3E%3Cpath d='M0 0 Q5 8 10 4 Q15 0 20 8 L20 8 L0 8Z' fill='%23E8E3D3'/%3E%3C/svg%3E");
       background-size: 20px 8px;
       background-repeat: repeat-x;
     }
-
-    /* Tape strip at top */
     .clipping::before {
       content: '';
       position: absolute;
-      top: -10px;
-      left: 50%;
+      top: -10px; left: 50%;
       transform: translateX(-50%) rotate(-2deg);
       width: 50px; height: 20px;
       background: rgba(201,168,76,0.35);
       backdrop-filter: blur(2px);
     }
-
     .clipping-paper-lines {
       position: absolute;
       inset: 0;
-      background-image: repeating-linear-gradient(
-        transparent,
-        transparent 1.4rem,
-        rgba(10,10,15,0.06) 1.4rem,
-        rgba(10,10,15,0.06) calc(1.4rem + 1px)
-      );
+      background-image: repeating-linear-gradient(transparent, transparent 1.4rem, rgba(10,10,15,0.06) 1.4rem, rgba(10,10,15,0.06) calc(1.4rem + 1px));
       background-size: 100% 1.41rem;
       background-position: 0 1.4rem;
       pointer-events: none;
     }
-
     .clipping-label {
       font-family: var(--font-mono);
       font-size: 0.6rem;
@@ -919,7 +805,6 @@
       color: var(--crimson);
       margin-bottom: 0.5rem;
     }
-
     .clipping-role {
       font-family: var(--font-display);
       font-size: 1.1rem;
@@ -928,7 +813,6 @@
       margin-bottom: 0.3rem;
       line-height: 1.2;
     }
-
     .clipping-company {
       font-family: var(--font-body);
       font-style: italic;
@@ -936,7 +820,6 @@
       color: var(--charcoal);
       margin-bottom: 0.75rem;
     }
-
     .clipping-desc {
       font-family: var(--font-body);
       font-size: 0.85rem;
@@ -944,33 +827,22 @@
       color: var(--charcoal);
     }
 
-    .clipping-empty { /* spacer on alt side */ }
-
-    /* ══════════════════════════════════════════════════
-       § 4  WORK — Case Files
-    ══════════════════════════════════════════════════ */
+    /* ── Work ── */
     #work {
       background: var(--newsprint);
       color: var(--ink);
       padding: 8rem 0;
       position: relative;
     }
-
     #work .section-title { color: var(--ink); }
     #work .section-eyebrow { color: var(--crimson); }
-    #work .section-eyebrow::before,
-    #work .section-eyebrow::after { opacity: 0.4; color: var(--ink); }
+    #work .section-eyebrow::before, #work .section-eyebrow::after { opacity: 0.4; color: var(--ink); }
 
     .case-files-stack {
       position: relative;
       max-width: 900px;
       margin: 0 auto;
       padding: 0 2rem;
-    }
-
-    /* Sticky file stack container */
-    .case-file-trigger {
-      position: relative;
     }
 
     .case-file {
@@ -980,20 +852,15 @@
       border: 1px solid rgba(10,10,15,0.12);
       box-shadow: 0 8px 40px rgba(0,0,0,0.15);
       margin-bottom: 3rem;
-      cursor: none;
       overflow: hidden;
-
-      /* Slight rotation per file for physical feel */
       transform: rotate(var(--file-tilt, 0deg));
       transition: transform 0.5s var(--ease-expo), box-shadow 0.5s;
     }
-
     .case-file:hover {
       transform: rotate(0deg) translateY(-4px);
       box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
 
-    /* Manila folder tab */
     .file-tab {
       background: #e8dfc0;
       border-bottom: 1px solid rgba(10,10,15,0.12);
@@ -1007,30 +874,18 @@
       color: var(--charcoal);
       text-transform: uppercase;
     }
-
-    .file-number {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--crimson);
-    }
-
+    .file-number { font-size: 0.8rem; font-weight: 700; color: var(--crimson); }
     .file-status {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
       color: var(--stone);
     }
-
-    /* Status dot via data attribute — avoids the inline-style/pseudo-element limitation */
-    .file-status::before {
-      content: '●';
-      font-size: 0.5rem;
-    }
+    .file-status::before { content: '●'; font-size: 0.5rem; }
     .file-status[data-status="Delivered"]::before   { color: #2d8a4e; }
     .file-status[data-status="In Progress"]::before { color: #C9A84C; }
     .file-status[data-status="Concept"]::before     { color: #9E9585; }
 
-    /* File body — the preview (always visible) */
     .file-preview {
       padding: 2.5rem 2.5rem 2rem;
       display: grid;
@@ -1038,7 +893,6 @@
       align-items: end;
       gap: 1.5rem;
     }
-
     .file-client {
       font-family: var(--font-mono);
       font-size: 0.6rem;
@@ -1047,7 +901,6 @@
       color: var(--stone);
       margin-bottom: 0.5rem;
     }
-
     .file-title {
       font-family: var(--font-display);
       font-size: clamp(1.4rem, 2.5vw, 2rem);
@@ -1056,7 +909,6 @@
       line-height: 1.1;
       margin-bottom: 0.5rem;
     }
-
     .file-role-tag {
       display: inline-block;
       padding: 0.3rem 0.8rem;
@@ -1066,7 +918,6 @@
       letter-spacing: 0.15em;
       color: var(--ink);
     }
-
     .file-open-btn {
       display: flex;
       flex-direction: column;
@@ -1076,12 +927,15 @@
       font-size: 0.55rem;
       letter-spacing: 0.15em;
       color: var(--stone);
-      cursor: none;
+      cursor: pointer;
+      background: none;
+      border: none;
       transition: color 0.3s;
+      min-width: 48px;
+      min-height: 48px;
+      justify-content: center;
     }
-
     .file-open-btn:hover { color: var(--ink); }
-
     .file-arrow {
       width: 32px; height: 32px;
       border: 1px solid currentColor;
@@ -1091,33 +945,24 @@
       font-size: 1rem;
       transition: transform 0.4s var(--ease-expo);
     }
-
     .file-open-btn:hover .file-arrow { transform: rotate(45deg); }
 
-    /* Expandable file content — max-height animates from 0 to open.
-       We use a very large max-height (2000px) so no content is ever clipped.
-       The CSS transition handles the smooth open/close animation.            */
     .file-content {
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.9s cubic-bezier(0.19, 1, 0.22, 1);
     }
-
     .file-content.open { max-height: 2000px; }
-
     .file-content-inner {
-      padding: 0 2.5rem 2.5rem;
+      padding: 1.5rem 2.5rem 2.5rem;
       border-top: 1px solid rgba(10,10,15,0.1);
-      padding-top: 1.5rem;
     }
-
     .case-detail-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
       margin-bottom: 2rem;
     }
-
     .case-detail h4 {
       font-family: var(--font-mono);
       font-size: 0.6rem;
@@ -1126,7 +971,6 @@
       color: var(--crimson);
       margin-bottom: 0.5rem;
     }
-
     .case-detail p {
       font-family: var(--font-body);
       font-size: 0.9rem;
@@ -1134,14 +978,13 @@
       color: var(--charcoal);
     }
 
-    /* Screenshot mosaic */
+    /* Browser mockups */
     .case-screenshots {
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
-
     .screenshot-frame {
       background: var(--charcoal);
       border-radius: 2px;
@@ -1149,20 +992,7 @@
       aspect-ratio: 16/10;
       position: relative;
     }
-
-    .screenshot-frame::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 60%);
-    }
-
-    .screenshot-frame-tall {
-      grid-row: span 2;
-      aspect-ratio: auto;
-    }
-
-    /* Browser chrome mock */
+    .screenshot-frame-tall { grid-row: span 2; aspect-ratio: auto; }
     .browser-chrome {
       height: 24px;
       background: #1a1a25;
@@ -1172,16 +1002,10 @@
       gap: 0.4rem;
       flex-shrink: 0;
     }
-
-    .browser-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-    }
-
+    .browser-dot { width: 7px; height: 7px; border-radius: 50%; }
     .bd-red { background: #ff5f56; }
     .bd-yellow { background: #ffbd2e; }
     .bd-green { background: #27c93f; }
-
     .browser-content {
       flex: 1;
       background: linear-gradient(135deg, #1e2030 0%, #2a2a40 100%);
@@ -1191,77 +1015,23 @@
       position: relative;
       overflow: hidden;
     }
+    .mock-ui { width: 85%; height: 70%; position: relative; }
+    .mock-header { height: 12%; background: rgba(201,168,76,0.15); border-radius: 2px; margin-bottom: 6%; }
+    .mock-hero-block { height: 35%; background: rgba(255,255,255,0.05); border-radius: 2px; margin-bottom: 4%; }
+    .mock-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4%; height: 28%; }
+    .mock-card { background: rgba(255,255,255,0.04); border-radius: 2px; }
 
-    /* Placeholder UI in screenshots */
-    .mock-ui {
-      width: 85%;
-      height: 70%;
-      position: relative;
-    }
-
-    .mock-header {
-      height: 12%;
-      background: rgba(201,168,76,0.15);
-      border-radius: 2px;
-      margin-bottom: 6%;
-    }
-
-    .mock-hero-block {
-      height: 35%;
-      background: rgba(255,255,255,0.05);
-      border-radius: 2px;
-      margin-bottom: 4%;
-    }
-
-    .mock-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 4%;
-      height: 28%;
-    }
-
-    .mock-card {
-      background: rgba(255,255,255,0.04);
-      border-radius: 2px;
-    }
-
-    /* Client testimonial on file */
-    .client-feedback {
-      background: rgba(10,10,15,0.04);
-      border-left: 3px solid var(--crimson);
-      padding: 1rem 1.25rem;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 0.95rem;
-      color: var(--charcoal);
-      line-height: 1.6;
-    }
-
-    .feedback-author {
-      display: block;
-      margin-top: 0.6rem;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      color: var(--stone);
-      font-style: normal;
-    }
-
-    /* ══════════════════════════════════════════════════
-       § 5  SERVICES
-    ══════════════════════════════════════════════════ */
+    /* ── Services ── */
     #services {
       background: var(--ink);
       padding: 8rem 0;
       position: relative;
       overflow: hidden;
     }
-
     #services::before {
       content: 'SERVICES';
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-family: var(--font-display);
       font-size: 20vw;
@@ -1287,10 +1057,9 @@
       border: 1px solid rgba(242,237,215,0.08);
       position: relative;
       overflow: hidden;
-      cursor: none;
+      cursor: default;
       transition: background 0.4s;
     }
-
     .service-card::before {
       content: '';
       position: absolute;
@@ -1301,14 +1070,12 @@
       transition: transform 0.6s var(--ease-expo);
       z-index: 0;
     }
-
     .service-card:hover::before { transform: scaleX(1); }
     .service-card:hover .service-number,
     .service-card:hover .service-title,
     .service-card:hover .service-desc,
-    .service-card:hover .service-outcome { color: var(--ink); }
+    .service-card:hover .service-outcome,
     .service-card:hover .service-icon { color: var(--ink); }
-
     .service-card > * { position: relative; z-index: 1; }
 
     .service-number {
@@ -1319,7 +1086,6 @@
       margin-bottom: 1.5rem;
       transition: color 0.4s;
     }
-
     .service-icon {
       font-size: 2rem;
       margin-bottom: 1rem;
@@ -1327,7 +1093,6 @@
       color: var(--newsprint);
       transition: color 0.4s;
     }
-
     .service-title {
       font-family: var(--font-display);
       font-size: 1.6rem;
@@ -1337,7 +1102,6 @@
       line-height: 1.1;
       transition: color 0.4s;
     }
-
     .service-desc {
       font-family: var(--font-body);
       font-size: 0.95rem;
@@ -1346,7 +1110,6 @@
       margin-bottom: 1.5rem;
       transition: color 0.4s;
     }
-
     .service-outcome {
       font-family: var(--font-mono);
       font-size: 0.65rem;
@@ -1358,12 +1121,9 @@
       align-items: center;
       gap: 0.5rem;
     }
-
     .service-outcome::before { content: '→'; }
 
-    /* ══════════════════════════════════════════════════
-       § 6  CONTACT
-    ══════════════════════════════════════════════════ */
+    /* ── Contact ── */
     #contact {
       background: var(--newsprint);
       color: var(--ink);
@@ -1371,7 +1131,6 @@
       position: relative;
       overflow: hidden;
     }
-
     #contact::before {
       content: '';
       position: absolute;
@@ -1379,7 +1138,6 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
     }
-
     .contact-inner {
       max-width: 1000px;
       margin: 0 auto;
@@ -1387,7 +1145,6 @@
       text-align: center;
       position: relative;
     }
-
     .contact-headline {
       font-family: var(--font-display);
       font-size: clamp(2.5rem, 6vw, 5.5rem);
@@ -1397,12 +1154,7 @@
       color: var(--ink);
       margin-bottom: 2rem;
     }
-
-    .contact-headline em {
-      font-style: italic;
-      color: var(--crimson);
-    }
-
+    .contact-headline em { font-style: italic; color: var(--crimson); }
     .contact-subtext {
       font-family: var(--font-body);
       font-style: italic;
@@ -1412,7 +1164,6 @@
       margin: 0 auto 3.5rem;
       line-height: 1.7;
     }
-
     .contact-cta {
       display: inline-flex;
       align-items: center;
@@ -1425,77 +1176,15 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       text-decoration: none;
-      cursor: none;
+      cursor: pointer;
       transition: background 0.3s, color 0.3s, transform 0.3s;
       font-weight: 700;
     }
+    .contact-cta:hover { background: var(--crimson); transform: translateY(-3px); }
 
-    .contact-cta:hover {
-      background: var(--crimson);
-      transform: translateY(-3px);
-    }
+    .contact-divider { width: 80px; height: 1px; background: rgba(10,10,15,0.2); margin: 4rem auto; }
 
-    .contact-divider {
-      width: 80px;
-      height: 1px;
-      background: rgba(10,10,15,0.2);
-      margin: 4rem auto;
-    }
-
-    .contact-links {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-    }
-
-    .contact-link {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--stone);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .contact-link:hover { color: var(--ink); }
-
-    /* ── ATTACHMENT AVAILABILITY BADGE — TASK 5 ────────
-       A small pulsing green indicator below the CTA button
-       in the contact section. Makes the industrial attachment
-       availability unmissable for recruiters scanning the page.
-       Design language: subtle, professional, not gimmicky.
-    ─────────────────────────────────────────────── */
-    .attachment-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 2rem;
-      padding: 0.6rem 1.2rem;
-      border: 1px solid rgba(10,10,15,0.15);
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--stone);
-    }
-
-    .attachment-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #2d8a4e;
-      flex-shrink: 0;
-      /* Pulse animation — communicates live/active status */
-      animation: attachPulse 2.5s ease-in-out infinite;
-    }
-
-    @keyframes attachPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(45,138,78,0.4); }
-      50%       { box-shadow: 0 0 0 6px rgba(45,138,78,0); }
-    }
-
-    /* ── FOOTER ── */
+    /* ── Footer ── */
     footer {
       background: var(--ink);
       color: var(--stone);
@@ -1508,7 +1197,7 @@
       letter-spacing: 0.15em;
     }
 
-    /* ── LOADING SCREEN ── */
+    /* ── Loader ── */
     #loader {
       position: fixed;
       inset: 0;
@@ -1520,7 +1209,6 @@
       justify-content: center;
       gap: 2rem;
     }
-
     .loader-name {
       font-family: var(--font-display);
       font-size: clamp(2rem, 6vw, 4rem);
@@ -1529,45 +1217,26 @@
       letter-spacing: 0.1em;
       overflow: hidden;
     }
+    .loader-name span { display: inline-block; transform: translateY(100%); }
+    .loader-bar-wrap { width: 200px; height: 1px; background: rgba(242,237,215,0.15); overflow: hidden; }
+    .loader-bar { height: 100%; background: var(--gold); width: 0%; transition: width 0.05s linear; }
+    .loader-count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.2em; }
 
-    .loader-name span {
-      display: inline-block;
-      transform: translateY(100%);
-    }
-
-    .loader-bar-wrap {
-      width: 200px;
-      height: 1px;
-      background: rgba(242,237,215,0.15);
-      overflow: hidden;
-    }
-
-    .loader-bar {
-      height: 100%;
-      background: var(--gold);
-      width: 0%;
-      transition: width 0.05s linear;
-    }
-
-    .loader-count {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--gold);
-      letter-spacing: 0.2em;
-    }
-
-    /* ══════════════════════════════════════════════════
-       UTILITY / RESPONSIVE
-    ══════════════════════════════════════════════════ */
+    /* ── Utilities ── */
     .sr-only {
       position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
       overflow: hidden;
       clip: rect(0,0,0,0);
       border: 0;
+    }
+
+    /* Focus styles for keyboard nav */
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1578,95 +1247,68 @@
       }
     }
 
+    /* ── Responsive ── */
     @media (max-width: 900px) {
       nav { padding: 1.2rem 2rem; }
-      /* Hide desktop links; show hamburger button */
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
 
-      /* ── HERO PORTRAIT — MOBILE (TASK 3) ──────────────────
-         On mobile the portrait is repositioned to fill the
-         right half of the screen as a background layer.
-         object-position: top center keeps the face fully visible.
-         The left overlay (::before) provides text contrast.
-         Opacity reduced so it doesn't overwhelm the text.        */
-      .hero-portrait {
-        right: 0;
-        width: 60vw;
-        height: 70%;
-        bottom: 0;
-        opacity: 0.55;
+      /* Social dock moves to bottom center on mobile */
+      .social-dock {
+        left: 50%;
+        top: auto;
+        bottom: 1.5rem;
+        transform: translateX(-50%);
+        flex-direction: row;
+        gap: 0.75rem;
       }
-      .hero-portrait {
-        right: 0;
-        width: 60vw;
-        height: 70%;
-        bottom: 0;
-        opacity: 0.55;
+      .social-dock::before,
+      .social-dock::after {
+        width: 40px; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3));
       }
-      /* On mobile, ensure the full face shows (no forehead crop) */
-      .hero-portrait-img {
-        object-position: top center;
+      .social-dock::after {
+        background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
       }
+      .social-btn:hover { transform: scale(1.15) translateY(-3px); }
+
+      .hero-portrait { right: 0; width: 60vw; height: 70%; bottom: 0; opacity: 0.55; }
+      .hero-portrait-img { object-position: top center; }
       .hero-content { grid-template-columns: 1fr; padding: 0 2rem; }
       .hero-name { font-size: clamp(3.5rem, 14vw, 7rem); }
-      /* Scroll indicator: centered bottom on mobile too — no change needed
-         since it's now position: absolute; left: 50%; transform: translateX(-50%) */
 
       #about { padding: 6rem 1.5rem; }
       .newspaper { padding: 2rem 1.5rem; }
       .newspaper-body { column-count: 1; }
 
-      /* On mobile, timeline runs as a single vertical column.
-         The alternating left/right layout collapses to: dot → clipping. */
+      /* Timeline collapses to single column */
       .timeline-item { grid-template-columns: 40px 1fr; gap: 1rem; }
       .timeline-item .clipping { grid-column: 2; }
       .timeline-item .timeline-dot-col { grid-column: 1; grid-row: 1; }
-      /* Override the even-item reordering that works on desktop */
       .timeline-item:nth-child(even) .clipping     { order: unset; grid-column: 2; }
       .timeline-item:nth-child(even) .timeline-dot-col { order: unset; grid-column: 1; }
-      .timeline-item:nth-child(even) .clipping-empty   { display: none; }
+      .timeline-item:nth-child(even) .clipping-empty { display: none; }
       .clipping-empty { display: none; }
-      /* Move the timeline spine to the left to align with the dot column.
-         The dot column is 40px wide with 2rem (32px) left padding on the grid.
-         So spine lives at 32 + 20 = 52px from left.                        */
       #timeline::before { left: 52px; transform: none; }
 
-      /* Work section — mobile specific */
-      /* Remove the rotation effect on small screens; it causes overflow issues */
+      /* Work section */
       .case-file { transform: none !important; }
       .case-file:hover { transform: none !important; }
-
-      /* Increase tap target for the open/close button */
-      .file-open-btn {
-        min-width: 48px;
-        min-height: 48px;
-        justify-content: center;
-      }
-      .file-arrow { width: 44px; height: 44px; }
-
-      /* Stack the file preview vertically on narrow screens */
       .file-preview { grid-template-columns: 1fr; }
       .file-open-btn { flex-direction: row; gap: 0.75rem; }
-
-      /* Detail grids stack */
+      .file-arrow { width: 44px; height: 44px; }
       .case-detail-grid { grid-template-columns: 1fr; }
       .case-screenshots { grid-template-columns: 1fr; }
-
-      /* Give file content more breathing room on mobile */
       .file-content-inner { padding: 0 1.5rem 1.5rem; }
       .file-preview { padding: 1.5rem; }
       .file-tab { padding: 0.75rem 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
 
       .services-grid { grid-template-columns: 1fr; padding: 0 2rem; }
-
       .contact-inner { padding: 0 2rem; }
       .contact-links { flex-direction: column; gap: 1.5rem; align-items: center; }
-
       footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
     }
 
-    /* Extra small — prevent any horizontal overflow on very narrow devices */
     @media (max-width: 420px) {
       .hero-name { font-size: clamp(3rem, 16vw, 5rem); }
       .newspaper-headline { font-size: clamp(1.4rem, 6vw, 2rem); }
@@ -1677,7 +1319,7 @@
 
 <body>
 
-<!-- ── LOADER ── -->
+<!-- Loader -->
 <div id="loader" aria-hidden="true">
   <div class="loader-name">
     <span>S</span><span>T</span><span>E</span><span>P</span><span>H</span><span>E</span><span>N</span>
@@ -1688,18 +1330,41 @@
   <div class="loader-count" id="loaderCount">0%</div>
 </div>
 
-<!-- ── CUSTOM CURSOR ── -->
+<!-- Custom cursor -->
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
-<!-- ════════════════════════════════════════════════
-     NAVIGATION
-════════════════════════════════════════════════ -->
+<!-- Social dock
+     Image swap guide:
+     Replace each <svg> with <img src="filename.ext" alt="..." />
+     Files: t_github9775.jpg · Linkedin Black.svg · email6505.logowik.com.webp -->
+<aside class="social-dock" aria-label="Social links">
+  <a href="https://github.com/Rexsteve"
+     class="social-btn"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="GitHub profile">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+  </a>
+  <a href="https://www.linkedin.com/in/stephen-otieno-a64294300/"
+     class="social-btn"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="LinkedIn profile">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+  </a>
+  <a href="mailto:stephen.ochiengofficial@gmail.com"
+     class="social-btn"
+     aria-label="Send email">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
+</aside>
+
+<!-- Navigation -->
 <nav role="navigation" aria-label="Main navigation" id="mainNav">
   <a href="#hero" class="nav-logo">S. Ochieng</a>
 
-  <!-- Desktop navigation links — hidden on mobile via CSS -->
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     <li><a href="#about">About</a></li>
     <li><a href="#timeline">Journey</a></li>
     <li><a href="#work">Work</a></li>
@@ -1707,13 +1372,12 @@
     <li><a href="#contact">Contact</a></li>
   </ul>
 
-  <!-- Hamburger — visible on mobile only (CSS media query shows this) -->
   <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- Mobile fullscreen menu overlay — toggled by JS via .nav-open class on <body> -->
+<!-- Mobile menu -->
 <div class="nav-mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
   <a href="#about"    class="mobile-nav-link">About</a>
   <a href="#timeline" class="mobile-nav-link">Journey</a>
@@ -1722,34 +1386,10 @@
   <a href="#contact"  class="mobile-nav-link">Contact</a>
 </div>
 
-<!-- ════════════════════════════════════════════════
-     § 1  HERO
-════════════════════════════════════════════════ -->
+<!-- Hero -->
 <section id="hero" aria-label="Introduction">
-  <!-- Grid overlay -->
   <div class="hero-grid-lines" aria-hidden="true"></div>
 
-  <!-- ══════════════════════════════════════════════════════════════
-       PORTRAIT — HOW TO ADD / REPLACE YOUR PHOTO:
-       ──────────────────────────────────────────────────────────────
-       The <img> below points to stephen-portrait.png in the same
-       folder as this HTML file.
-
-       Requirements for best results:
-         • Filename: stephen-portrait.png (or .jpg — update src below)
-         • Size: 800px wide × 1100px tall minimum
-         • Style: dark/neutral background, upper-body, face centred
-         • object-position: top center — keeps face visible at all sizes
-
-       TASK 3 — Mobile: the CSS ensures the face is never cropped.
-       TASK 4 — Darkening: CSS ::before and ::after overlays on
-                .hero-portrait apply editorial darkening without
-                altering the original image file.
-
-       To revert to the CSS placeholder silhouette, swap the <img>
-       with: <div class="portrait-placeholder" role="img"
-              aria-label="Portrait of Stephen Ochieng"></div>
-  ══════════════════════════════════════════════════════════════ -->
   <div class="hero-portrait" id="heroPortrait" aria-hidden="true">
     <img
       src="stephen-portrait.png"
@@ -1760,19 +1400,14 @@
     />
   </div>
 
-  <!-- Text content -->
   <div class="hero-content">
     <div class="hero-text">
-
-      <p class="hero-eyebrow" id="heroEyebrow">CS Student · Maseno University · Kenya</p>
 
       <h1 class="hero-name" id="heroName">
         <span class="word"><span>Stephen</span></span>
         <span class="word"><span>Ochieng</span></span>
       </h1>
 
-      <!-- TASK 2: Positioning per CV — student, builder, problem-solver.
-           Not agency. Not senior designer. Confident and honest.          -->
       <p class="hero-tagline" id="heroTagline">
         Computer Science student building digital products<br />
         through <em>code, systems thinking,</em> and a genuine<br />
@@ -1786,25 +1421,20 @@
     </div>
   </div>
 
-  <!-- Scroll indicator — TASK 6: centered bottom, vertical pulse line -->
   <div class="hero-scroll-indicator" id="heroScroll" aria-hidden="true">
     <span class="scroll-line"></span>
     Scroll
   </div>
 
-  <!-- Year stamp: updated to 2026, safely inside viewport -->
   <span class="hero-year" aria-hidden="true">3rd Year · 2026</span>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     § 2  ABOUT — Newspaper Unfold
-════════════════════════════════════════════════ -->
+<!-- About -->
 <section id="about" aria-label="About Stephen Ochieng">
-    <div class="newspaper-wrap" id="newspaperWrap">
+  <div class="newspaper-wrap" id="newspaperWrap">
     <div class="newspaper" id="newspaper" role="article">
       <div class="newspaper-shadow" aria-hidden="true"></div>
 
-      <!-- Masthead -->
       <header class="newspaper-masthead">
         <div class="masthead-title">The Maseno Dispatch</div>
         <div class="masthead-meta">
@@ -1816,7 +1446,6 @@
 
       <div class="masthead-rule" aria-hidden="true"></div>
 
-      <!-- Headline — authentic to Stephen's real story -->
       <h2 class="newspaper-headline">
         The Boy Who Drew Everything —<br />Now <em>Builds</em> It
       </h2>
@@ -1828,7 +1457,6 @@
 
       <div class="masthead-rule" aria-hidden="true"></div>
 
-      <!-- TASK 2: Article rewritten per CV — authentic, no exaggeration -->
       <div class="newspaper-body">
         <p>
           Long before Stephen Ochieng understood what a pixel was, he understood
@@ -1837,7 +1465,6 @@
           a mark. Classmates would gather to see what he had made. That early
           hunger to create something worth looking at never left him.
         </p>
-
         <p>
           His father is a graphic designer. That fact shaped Stephen more than
           any classroom could. He grew up watching a man arrange type, balance
@@ -1857,14 +1484,12 @@
           else. The degree has given him algorithms, systems thinking, database
           design, and the discipline of writing code that actually works.
         </p>
-
         <p>
           Now in his third year, Stephen builds academic and personal projects
           that combine software engineering with intentional design. He works
           across the full stack of a web project — from the database schema to
           the pixel on screen — and finds the intersection of the two the most
-          interesting place to be. This portfolio is a record of that work: what
-          he has built, how he thinks, and where he is headed.
+          interesting place to be.
         </p>
       </div>
 
@@ -1877,64 +1502,25 @@
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     § 3  TIMELINE — Data-driven personal journey
-     ────────────────────────────────────────────────
-     TO ADD A NEW JOURNEY ENTRY:
-     Open the <script> block near the bottom of this file.
-     Find the journeyData array. Add one object following
-     the same shape as the existing entries. The HTML here
-     is generated automatically — you never need to touch
-     this section's markup.
-════════════════════════════════════════════════ -->
+<!-- Timeline -->
 <section id="timeline" aria-label="Personal Journey">
   <div class="section-header">
     <p class="section-eyebrow">The Journey</p>
     <h2 class="section-title">A Story in <em>Chapters</em></h2>
   </div>
-
-  <!--
-    .timeline-grid is intentionally empty here.
-    The renderJourney() function in the script block populates it
-    by looping over the journeyData[] array.
-    This keeps all content in one maintainable place.
-  -->
-  <div class="timeline-grid" id="timelineGrid" role="list">
-    <!-- Rendered by renderJourney() in <script> -->
-  </div>
+  <div class="timeline-grid" id="timelineGrid" role="list"></div>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     § 4  WORK — Case Files
-     ────────────────────────────────────────────────
-     TO ADD A NEW PROJECT:
-     Open the <script> block at the bottom of this file.
-     Find the workData array. Add one object with the same
-     shape as the existing entries. The HTML is generated
-     automatically by renderWork(). No layout code changes needed.
-════════════════════════════════════════════════ -->
+<!-- Work -->
 <section id="work" aria-label="Selected Work">
   <div class="section-header" style="color: var(--ink);">
     <p class="section-eyebrow">Case Files</p>
     <h2 class="section-title" style="color: var(--ink);">Selected <em style="color: var(--crimson);">Work</em></h2>
   </div>
-
-  <!--
-    #caseFilesStack is intentionally empty here.
-    The renderWork() function in the script block populates it
-    by looping over workData[] and building each file's HTML.
-    To add a project: edit workData[] only.
-  -->
-  <div class="case-files-stack" id="caseFilesStack">
-    <!-- Rendered by renderWork() in <script> -->
-  </div>
+  <div class="case-files-stack" id="caseFilesStack"></div>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     § 5  SERVICES
-     TASK 2: Rewritten per CV — honest about what a CS student
-     can deliver. Focused on outcomes, not inflated titles.
-════════════════════════════════════════════════ -->
+<!-- Services -->
 <section id="services" aria-label="Services">
   <div class="section-header">
     <p class="section-eyebrow">What I Build</p>
@@ -1942,7 +1528,6 @@
   </div>
 
   <div class="services-grid" role="list">
-
     <article class="service-card" role="listitem">
       <div class="service-number">01</div>
       <span class="service-icon" aria-hidden="true">◻</span>
@@ -1990,18 +1575,10 @@
       </p>
       <div class="service-outcome">Clear documentation that teams actually use</div>
     </article>
-
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     § 6  CONTACT
-     ────────────────────────────────────────────────
-     TO UPDATE CONTACT DETAILS:
-     Search for "stephen.ochiengofficial" → update email.
-     Search for "linkedin.com/in/stephen-otieno" → update LinkedIn.
-     Search for "github.com/Rexsteve" → update GitHub.
-════════════════════════════════════════════════ -->
+<!-- Contact -->
 <section id="contact" aria-label="Contact">
   <div class="contact-inner">
     <h2 class="contact-headline">
@@ -2017,224 +1594,106 @@
       Get In Touch →
     </a>
 
-    <div class="contact-divider" aria-hidden="true"></div>
+</section> 
 
-    <nav class="contact-links" aria-label="Social and contact links">
-      <a href="https://www.linkedin.com/in/stephen-otieno-a64294300/"
-         class="contact-link"
-         target="_blank"
-         rel="noopener noreferrer">LinkedIn</a>
-
-      <a href="https://github.com/Rexsteve"
-         class="contact-link"
-         target="_blank"
-         rel="noopener noreferrer">GitHub</a>
-
-      <a href="mailto:stephen.ochiengofficial@gmail.com"
-         class="contact-link">Email</a>
-    </nav>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
+<!-- Footer -->
 <footer>
   <span>© 2026 Stephen Ochieng. All rights reserved.</span>
   <span>Maseno University · Computer Science · Frontend Developer</span>
   <span>stephen.ochiengofficial@gmail.com</span>
 </footer>
 
-<!-- ════════════════════════════════════════════════
-     SCRIPTS
-════════════════════════════════════════════════ -->
 <script>
-/* ════════════════════════════════════════════════════════════════════
-   STEPHEN OTIENO — PORTFOLIO SCRIPT
-   ────────────────────────────────────────────────────────────────────
-   This file is structured in three layers:
-
-   1. DATA LAYER   — journeyData[] and workData[]
-                     Edit ONLY these arrays to update content.
-
-   2. RENDER LAYER — renderJourney() and renderWork()
-                     These convert data arrays into HTML.
-                     Do not edit unless you need to change layout.
-
-   3. ANIMATION LAYER — GSAP + ScrollTrigger setup.
-                        Do not edit unless you want to change
-                        animation behaviour.
-═══════════════════════════════════════════════════════════════════ */
-
-
-/* ════════════════════════════════════════════════
-   § DATA — JOURNEY
-   ────────────────────────────────────────────────
-   TASK 2: Updated to reflect real CV timeline.
-   Maranda High School → Maseno University (2023).
-   Projects from CV: Event Management (2025),
-   Hospitality IMS (2026), Comprint website (2025).
-
-   HOW TO ADD A NEW JOURNEY ENTRY:
-   1. Copy any object below.
-   2. Paste it at the end of the array (before the ] ).
-   3. Fill in: year, chapter, role, context, description.
-   4. Save. The page renders it automatically.
-
-   Fields:
-   - year        : string, e.g. "2023"
-   - chapter     : short label for the era
-   - role        : headline of what you were doing
-   - context     : where / what setting
-   - description : 1–2 sentences. Be truthful and specific.
-   - tilt        : slight rotation in degrees (keep -2 to 2)
-════════════════════════════════════════════════ */
+/* ── Data: Journey ── */
 const journeyData = [
   {
-    year:        'Childhood',
-    chapter:     'First Marks',
-    role:        'The Boy Who Drew Everything',
-    context:     'Growing up in Kenya',
+    year: 'Childhood', chapter: 'First Marks',
+    role: 'The Boy Who Drew Everything', context: 'Growing up in Kenya',
     description: 'Art was the first language. Sketchbooks, notebook margins, any flat surface — Stephen filled them all. His father is a graphic designer; design was serious work in that household. This compulsion to make things visible never went away.',
-    tilt:        -1.5
+    tilt: -1.5
   },
   {
-    year:        '2019–2022',
-    chapter:     'Maranda High School',
-    role:        'KCSE — B+ (73 Points)',
-    context:     'Maranda High School, Kenya',
-    description: 'Completed secondary education at Maranda High School, graduating with a B+ grade in the Kenya Certificate of Secondary Education. Developed early interest in mathematics, science, and how technology works — the groundwork for a Computer Science degree.',
-    tilt:        1.2
+    year: '2019–2022', chapter: 'Maranda High School',
+    role: 'KCSE — B+ (73 Points)', context: 'Maranda High School, Kenya',
+    description: 'Completed secondary education at Maranda High School, graduating with a B+ in the KCSE. Developed early interest in mathematics, science, and how technology works — the groundwork for a Computer Science degree.',
+    tilt: 1.2
   },
   {
-    year:        '2023',
-    chapter:     'The Foundation',
-    role:        'Computer Science Student',
-    context:     'Maseno University, Kenya — BSc Computer Science',
-    description: 'Enrolled in Computer Science at Maseno University. The degree provides grounding in programming (Python, Java, PHP, SQL), algorithms, data structures, database design, and systems development. Design layered on top — and the two started talking to each other.',
-    tilt:        -0.8
+    year: '2023', chapter: 'The Foundation',
+    role: 'Computer Science Student', context: 'Maseno University, Kenya — BSc Computer Science',
+    description: 'Enrolled in Computer Science at Maseno University. The degree provides grounding in Python, Java, PHP, SQL, algorithms, data structures, database design, and systems development. Design layered on top — and the two started talking to each other.',
+    tilt: -0.8
   },
   {
-    year:        'Jan–May 2025',
-    chapter:     'First Team Project',
-    role:        'Software Developer — Event Management System',
-    context:     'Maseno University — Team Project',
-    description: 'Developed an event scheduling and registration system in a team environment. Implemented core features, performed testing and debugging, and supported system documentation. First real experience of collaborative software development and the discipline it demands.',
-    tilt:        1.6
+    year: 'Jan–May 2025', chapter: 'First Team Project',
+    role: 'Software Developer — Event Management System', context: 'Maseno University — Team Project',
+    description: 'Developed an event scheduling and registration system in a team. Implemented core features, performed testing and debugging, and supported documentation. First real experience of collaborative software development.',
+    tilt: 1.6
   },
   {
-    year:        '2025',
-    chapter:     'First Real Client',
-    role:        'Web Designer & Developer',
-    context:     'Comprint Concepts Limited, Nairobi',
+    year: '2025', chapter: 'First Real Client',
+    role: 'Web Designer & Developer', context: 'Comprint Concepts Limited, Nairobi',
     description: 'Built a complete multi-page website for a Nairobi printing company — first independent client project. Handled UX decisions, responsive implementation, performance optimisation, and brand alignment from brief to launch.',
-    tilt:        -1.1
+    tilt: -1.1
   },
   {
-    year:        '2026',
-    chapter:     'Building Now',
-    role:        'Developer — Hospitality Information Management System',
-    context:     'Maseno University · Third Year',
-    description: 'Contributing to a hospitality information management system covering requirements gathering, database design, UI development, and documentation. Continuously improving as a developer, designer, and problem-solver — one project at a time.',
-    tilt:        0.8
+    year: '2026', chapter: 'Building Now',
+    role: 'Developer — Hospitality Information Management System', context: 'Maseno University · Third Year',
+    description: 'Contributing to a hospitality information management system covering requirements gathering, database design, UI development, and documentation. Continuously improving as a developer, designer, and problem-solver.',
+    tilt: 0.8
   }
 ];
 
-
-/* ════════════════════════════════════════════════
-   § DATA — WORK / PROJECTS
-   ────────────────────────────────────────────────
-   TASK 2: Rewritten from CV — only real projects.
-   No fabricated clients, no invented metrics.
-
-   HOW TO ADD A NEW PROJECT:
-   1. Copy any object below.
-   2. Paste at the end of the array (before the ] ).
-   3. Fill in all fields. Be truthful — no invented metrics.
-   4. For status use: 'Delivered' | 'In Progress' | 'Concept'
-   5. The page renders it automatically.
-
-   Fields:
-   - id          : unique string, e.g. 'file4' (no spaces)
-   - number      : display string, e.g. '04'
-   - label       : project name shown in the file tab (ALL CAPS)
-   - context     : where / what type of project
-   - title       : displayed as the main file headline
-   - tags        : comma-separated skills, shown as a badge
-   - status      : 'Delivered' | 'In Progress' | 'Concept'
-   - tilt        : file rotation in degrees
-   - overview    : what the project is
-   - challenge   : what problem existed
-   - solution    : what you did (be specific about your decisions)
-   - outcome     : honest results — no fabricated numbers
-   - feedback    : optional { quote, author } — leave null if none
-════════════════════════════════════════════════ */
+/* ── Data: Work ── */
 const workData = [
   {
-    id:        'file1',
-    number:    '01',
-    label:     'HOSPITALITY INFORMATION MANAGEMENT SYSTEM',
-    context:   'Team Project — Maseno University, 2026',
-    title:     'Hospitality Information Management System',
-    tags:      'Systems Dev · Database Design · UI · PHP · SQL',
-    status:    'Delivered',
-    tilt:      -0.8,
-    overview:  'A team project to design and build an information management system for hospitality operations. The system handles operational data relevant to a hospitality environment, providing a structured interface for staff to manage records.',
-    challenge: 'Hospitality environments deal with high volumes of operational data that is often managed manually or through disconnected spreadsheets. The challenge was to build a system that was both technically sound and genuinely usable by non-technical staff.',
-    solution:  'Participated in requirements gathering, system analysis, database design, and UI development. Contributed to both the backend data structure and the frontend interface to ensure usability was treated as a first-class concern alongside functionality. Documentation was maintained throughout.',
-    outcome:   'System completed and submitted as part of coursework. The project built practical experience in team-based software development, database schema design, and the full lifecycle of a systems development project.',
-    feedback:  null
+    id: 'file1', number: '01',
+    label: 'HOSPITALITY INFORMATION MANAGEMENT SYSTEM',
+    context: 'Team Project — Maseno University, 2026',
+    title: 'Hospitality Information Management System',
+    tags: 'Systems Dev · Database Design · UI · PHP · SQL',
+    status: 'Delivered', tilt: -0.8,
+    overview: 'A team project to design and build an information management system for hospitality operations. The system handles operational data and provides a structured interface for staff to manage records.',
+    challenge: 'Hospitality environments deal with high volumes of data often managed manually. The challenge was building a system that was technically sound and genuinely usable by non-technical staff.',
+    solution: 'Participated in requirements gathering, system analysis, database design, and UI development. Contributed to both backend data structure and frontend interface, ensuring usability was a first-class concern alongside functionality.',
+    outcome: 'System completed and submitted. Built practical experience in team-based software development, database schema design, and the full lifecycle of a systems project.',
+    feedback: null
   },
   {
-    id:        'file2',
-    number:    '02',
-    label:     'EVENT MANAGEMENT SYSTEM',
-    context:   'Team Project — Maseno University, Jan–May 2025',
-    title:     'Event Management System',
-    tags:      'Software Dev · Scheduling · Testing · Debugging',
-    status:    'Delivered',
-    tilt:      0.6,
-    overview:  'A software project to build a system for event scheduling and registration. Built in a team environment over the January to May 2025 semester, covering planning, implementation, testing, and documentation.',
-    challenge: 'Event scheduling systems need to handle conflicts, registrations, and data integrity across multiple users. The challenge was implementing core scheduling logic correctly while keeping the interface manageable for end users.',
-    solution:  'Assisted in implementing core features including event creation, scheduling, and user registration. Performed systematic testing and debugging to surface edge cases and improve system reliability. Supported system documentation to ensure the codebase was understandable beyond the original team.',
-    outcome:   'System completed, tested, and submitted. The project developed practical skills in collaborative software development, functional testing methodology, and writing code in a team codebase where clarity matters as much as correctness.',
-    feedback:  null
+    id: 'file2', number: '02',
+    label: 'EVENT MANAGEMENT SYSTEM',
+    context: 'Team Project — Maseno University, Jan–May 2025',
+    title: 'Event Management System',
+    tags: 'Software Dev · Scheduling · Testing · Debugging',
+    status: 'Delivered', tilt: 0.6,
+    overview: 'A software project to build a system for event scheduling and registration. Built in a team environment over one semester, covering planning, implementation, testing, and documentation.',
+    challenge: 'Event scheduling systems need to handle conflicts, registrations, and data integrity across multiple users while keeping the interface manageable.',
+    solution: 'Assisted in implementing core features including event creation, scheduling, and user registration. Performed systematic testing and debugging, and supported system documentation for maintainability.',
+    outcome: 'System completed, tested, and submitted. Developed practical skills in collaborative development, functional testing methodology, and writing code in a shared codebase.',
+    feedback: null
   },
   {
-    id:        'file3',
-    number:    '03',
-    label:     'COMPRINT CONCEPTS — CLIENT WEBSITE',
-    context:   'Freelance Project — Nairobi, Kenya, 2025',
-    title:     'Business Website & Digital Presence',
-    tags:      'HTML · CSS · JavaScript · Responsive · Web Design',
-    status:    'Delivered',
-    tilt:      -0.4,
-    overview:  'Designed and built a complete multi-page website for Comprint Concepts Limited, a Nairobi-based printing and branding company. The project covered Home, Services, Portfolio, and Clients pages.',
-    challenge: 'The company had no website. Their physical work — print, signage, branding — was high quality, but potential clients had no way to discover or evaluate them online. The goal was a digital presence that matched the quality of their output.',
-    solution:  'Built a responsive multi-page HTML/CSS/JavaScript site with a hero carousel, services section with a fuzzy-search bar, a portfolio gallery with lazy-loaded images, and WhatsApp-integrated CTAs for direct enquiries. Careful attention was paid to mobile performance and image optimisation throughout.',
-    outcome:   'Comprint Concepts now has a professional web presence for the first time. The site is live and used in their business communications. First independent client project — valuable experience managing a real brief from start to delivery.',
-    feedback:  null
+    id: 'file3', number: '03',
+    label: 'COMPRINT CONCEPTS — CLIENT WEBSITE',
+    context: 'Freelance Project — Nairobi, Kenya, 2025',
+    title: 'Business Website & Digital Presence',
+    tags: 'HTML · CSS · JavaScript · Responsive · Web Design',
+    status: 'Delivered', tilt: -0.4,
+    overview: 'Designed and built a complete multi-page website for Comprint Concepts Limited, a Nairobi-based printing and branding company. Covered Home, Services, Portfolio, and Clients pages.',
+    challenge: 'The company had no website. Their physical work was high quality, but potential clients had no way to discover or evaluate them online.',
+    solution: 'Built a responsive multi-page HTML/CSS/JS site with a hero carousel, services section with fuzzy-search, a portfolio gallery with lazy-loaded images, and WhatsApp-integrated CTAs. Careful attention to mobile performance throughout.',
+    outcome: 'Comprint Concepts now has a professional web presence for the first time. The site is live and used in their business communications. Valuable experience managing a real brief from start to delivery.',
+    feedback: null
   }
 ];
 
-
-/* ════════════════════════════════════════════════
-   § RENDER — JOURNEY
-   Converts journeyData[] into timeline HTML.
-   The alternating left/right layout is handled by
-   CSS (nth-child even rule) — the JS just inserts
-   entries in order.
-════════════════════════════════════════════════ */
+/* ── Render: Journey ── */
 function renderJourney() {
   const grid = document.getElementById('timelineGrid');
   if (!grid) return;
-
   grid.innerHTML = journeyData.map((entry, i) => {
-    /* Even-indexed items have the clipping on the right side;
-       odd on the left. CSS handles the visual swap via nth-child.
-       We just always put clipping, dot-col, empty in that order
-       for odd, and empty, dot-col, clipping for even.            */
-    const isEven = i % 2 !== 0; /* 0-indexed so "even" visual = odd index */
-
-    const clippingHTML = `
+    const isEven = i % 2 !== 0;
+    const clipping = `
       <div class="clipping" style="--tilt: ${entry.tilt}deg">
         <div class="clipping-paper-lines" aria-hidden="true"></div>
         <div class="clipping-label">${entry.year} — ${entry.chapter}</div>
@@ -2242,45 +1701,28 @@ function renderJourney() {
         <div class="clipping-company">${entry.context}</div>
         <p class="clipping-desc">${entry.description}</p>
       </div>`;
-
-    const dotHTML = `
+    const dot = `
       <div class="timeline-dot-col" aria-hidden="true">
         <div class="timeline-dot"></div>
         <div class="timeline-year-label">${entry.year}</div>
       </div>`;
-
-    const emptyHTML = `<div class="clipping-empty" aria-hidden="true"></div>`;
-
-    return `
-      <div class="timeline-item" role="listitem">
-        ${isEven ? emptyHTML + dotHTML + clippingHTML : clippingHTML + dotHTML + emptyHTML}
-      </div>`;
+    const empty = `<div class="clipping-empty" aria-hidden="true"></div>`;
+    return `<div class="timeline-item" role="listitem">${isEven ? empty + dot + clipping : clipping + dot + empty}</div>`;
   }).join('');
 }
 
-
-/* ════════════════════════════════════════════════
-   § RENDER — WORK / CASE FILES
-   Converts workData[] into case file HTML.
-   Each file has a visible preview and a collapsible
-   detail section opened by toggleFile().
-════════════════════════════════════════════════ */
+/* ── Render: Work ── */
 function renderWork() {
   const stack = document.getElementById('caseFilesStack');
   if (!stack) return;
-
-  stack.innerHTML = workData.map((project, i) => {
-
-    /* Optional client feedback block */
-    const feedbackHTML = project.feedback ? `
+  stack.innerHTML = workData.map(project => {
+    const feedback = project.feedback ? `
       <blockquote class="client-feedback">
         "${project.feedback.quote}"
         <cite class="feedback-author">— ${project.feedback.author}</cite>
       </blockquote>` : '';
 
-    /* Browser chrome mock — decorative visual representation of the project.
-       In the future, replace this with real <img> screenshots.               */
-    const screenshotHTML = `
+    const screenshots = `
       <div class="case-screenshots" aria-label="Project visual">
         <div class="screenshot-frame screenshot-frame-tall">
           <div class="browser-chrome" aria-hidden="true">
@@ -2292,11 +1734,7 @@ function renderWork() {
             <div class="mock-ui" aria-hidden="true">
               <div class="mock-header"></div>
               <div class="mock-hero-block"></div>
-              <div class="mock-cards">
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-              </div>
+              <div class="mock-cards"><div class="mock-card"></div><div class="mock-card"></div><div class="mock-card"></div></div>
             </div>
           </div>
         </div>
@@ -2312,37 +1750,22 @@ function renderWork() {
             </div>
           </div>
         </div>
-      </div>
-      <!--
-        SCREENSHOT REPLACEMENT GUIDE:
-        Replace the .case-screenshots block above with:
-        <img src="your-screenshot.jpg" alt="[Project name] screenshot"
-             loading="lazy" style="width:100%;border-radius:2px;" />
-        Use 1200×800px images at 80% JPEG quality for best results.
-      -->`;
+      </div>`;
 
     return `
       <div class="case-file-trigger">
-        <article class="case-file"
-                 id="${project.id}"
-                 style="--file-tilt: ${project.tilt}deg"
-                 aria-label="Case File ${project.number}: ${project.label}">
-
-          <!-- File tab — the manila folder header -->
+        <article class="case-file" id="${project.id}" style="--file-tilt: ${project.tilt}deg" aria-label="Case File ${project.number}: ${project.label}">
           <div class="file-tab">
             <span class="file-number">FILE — ${project.number}</span>
             <span>${project.label}</span>
             <span class="file-status" data-status="${project.status}">${project.status}</span>
           </div>
-
-          <!-- File preview — always visible summary -->
           <div class="file-preview">
             <div>
               <div class="file-client">${project.context}</div>
               <div class="file-title">${project.title}</div>
               <span class="file-role-tag">${project.tags}</span>
             </div>
-            <!-- Open button — toggleFile() expands the detail section -->
             <button class="file-open-btn"
                     onclick="toggleFile('${project.id}Content', this)"
                     aria-expanded="false"
@@ -2351,103 +1774,59 @@ function renderWork() {
               <span>Open</span>
             </button>
           </div>
-
-          <!-- Collapsible detail section — hidden until Open is clicked -->
           <div class="file-content" id="${project.id}Content">
             <div class="file-content-inner">
-
-              <!-- Four-quadrant case study grid -->
               <div class="case-detail-grid">
-                <div class="case-detail">
-                  <h4>Overview</h4>
-                  <p>${project.overview}</p>
-                </div>
-                <div class="case-detail">
-                  <h4>Challenge</h4>
-                  <p>${project.challenge}</p>
-                </div>
-                <div class="case-detail">
-                  <h4>Solution</h4>
-                  <p>${project.solution}</p>
-                </div>
-                <div class="case-detail">
-                  <h4>Outcome</h4>
-                  <p>${project.outcome}</p>
-                </div>
+                <div class="case-detail"><h4>Overview</h4><p>${project.overview}</p></div>
+                <div class="case-detail"><h4>Challenge</h4><p>${project.challenge}</p></div>
+                <div class="case-detail"><h4>Solution</h4><p>${project.solution}</p></div>
+                <div class="case-detail"><h4>Outcome</h4><p>${project.outcome}</p></div>
               </div>
-
-              ${screenshotHTML}
-              ${feedbackHTML}
-
+              ${screenshots}
+              ${feedback}
             </div>
           </div>
-
         </article>
       </div>`;
   }).join('');
 }
 
-
-/* ════════════════════════════════════════════════
-   § CUSTOM CURSOR
-   A gold dot follows the mouse precisely.
-   A larger ring follows with a slight lag —
-   achieved by lerping (linear interpolating) the
-   ring's position toward the mouse each frame.
-   The ring expands on hover over interactive elements
-   to give a tactile click-invitation feeling.
-════════════════════════════════════════════════ */
+/* ── Custom cursor ── */
 (function() {
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursorRing');
-  /* Hide cursor elements on touch devices — they have no mouse */
   if (!cursor || !ring || window.matchMedia('(pointer: coarse)').matches) {
     if (cursor) cursor.style.display = 'none';
     if (ring)   ring.style.display   = 'none';
+    document.body.classList.add('touch-device');
     return;
   }
-
   let mx = 0, my = 0, rx = 0, ry = 0;
-
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
     cursor.style.left = mx + 'px';
     cursor.style.top  = my + 'px';
   });
-
-  /* Animate ring toward mouse at 12% per frame — creates lag/inertia */
-  function animateRing() {
+  (function animateRing() {
     rx += (mx - rx) * 0.12;
     ry += (my - ry) * 0.12;
     ring.style.left = rx + 'px';
     ring.style.top  = ry + 'px';
     requestAnimationFrame(animateRing);
-  }
-  animateRing();
-
-  /* Expand ring on any interactive element hover */
-  function bindHoverToNewElements() {
+  })();
+  function bindHovers() {
     document.querySelectorAll('a, button, .case-file, .clipping, .service-card').forEach(el => {
-      if (el.dataset.cursorBound) return; /* Prevent duplicate listeners */
+      if (el.dataset.cursorBound) return;
       el.dataset.cursorBound = '1';
       el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
       el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
     });
   }
-
-  /* Call once immediately, then again after render (new elements added by JS) */
-  bindHoverToNewElements();
-  setTimeout(bindHoverToNewElements, 500);
+  bindHovers();
+  setTimeout(bindHovers, 500);
 })();
 
-
-/* ════════════════════════════════════════════════
-   § MOBILE NAVIGATION HAMBURGER
-   Toggles .nav-open on <body>.
-   CSS uses body.nav-open to show the mobile overlay
-   and animate the hamburger bars into an ×.
-   Menu closes when a link is tapped, or Escape pressed.
-════════════════════════════════════════════════ */
+/* ── Mobile navigation ── */
 (function() {
   const hamburger  = document.getElementById('navHamburger');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -2457,36 +1836,21 @@ function renderWork() {
     document.body.classList.add('nav-open');
     hamburger.setAttribute('aria-expanded', 'true');
     mobileMenu.setAttribute('aria-hidden', 'false');
-    /* body.nav-open CSS already prevents scroll — see: body.nav-open { overflow: hidden } */
   }
-
   function closeMenu() {
     document.body.classList.remove('nav-open');
     hamburger.setAttribute('aria-expanded', 'false');
     mobileMenu.setAttribute('aria-hidden', 'true');
   }
 
-  hamburger.addEventListener('click', () => {
-    document.body.classList.contains('nav-open') ? closeMenu() : openMenu();
-  });
-
-  /* Close menu when any mobile link is tapped */
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  /* Close on Escape key */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeMenu();
-  });
+  hamburger.addEventListener('click', () =>
+    document.body.classList.contains('nav-open') ? closeMenu() : openMenu()
+  );
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 })();
 
-
-/* ════════════════════════════════════════════════
-   § FILE TOGGLE — Case file expand/collapse
-   Opens one file at a time (closes others first).
-   Accessible: updates aria-expanded on the button.
-════════════════════════════════════════════════ */
+/* ── Case file toggle ── */
 function toggleFile(contentId, btn) {
   const content = document.getElementById(contentId);
   if (!content) return;
@@ -2503,7 +1867,6 @@ function toggleFile(contentId, btn) {
     }
   });
 
-  /* If it was closed, open it */
   if (!isOpen) {
     content.classList.add('open');
     btn.setAttribute('aria-expanded', 'true');
@@ -2512,41 +1875,48 @@ function toggleFile(contentId, btn) {
   }
 }
 
+/* ── Smooth anchor scrolling — early attachment ── */
+function scrollToSection(href) {
+  if (!href || href === '#' || !href.startsWith('#')) return;
+  const target = document.querySelector(href);
+  if (!target) return;
 
-/* ════════════════════════════════════════════════
-   § INIT — Run data renders before GSAP
-   Journey and Work sections are empty in the HTML.
-   We populate them with JS before animations run,
-   so ScrollTrigger can measure the correct heights.
-════════════════════════════════════════════════ */
+  /* Close mobile menu */
+  document.body.classList.remove('nav-open');
+  const hb = document.getElementById('navHamburger');
+  const mm = document.getElementById('mobileMenu');
+  if (hb) hb.setAttribute('aria-expanded', 'false');
+  if (mm) mm.setAttribute('aria-hidden', 'true');
+
+  if (window.gsap && window.ScrollToPlugin) {
+    gsap.to(window, { duration: 1.1, scrollTo: { y: target, offsetY: 90 }, ease: 'power3.inOut' });
+  } else {
+    const top = target.getBoundingClientRect().top + window.scrollY - 90;
+    window.scrollTo({ top });
+  }
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    scrollToSection(this.getAttribute('href'));
+  });
+});
+
+/* ── Init ── */
 renderJourney();
 renderWork();
 
-
-/* ════════════════════════════════════════════════
-   § WAIT FOR GSAP
-   GSAP is loaded with `defer` so it may not be
-   ready immediately. We poll until it's available.
-════════════════════════════════════════════════ */
+/* ── GSAP suite ── */
 function waitForGSAP(fn) {
-  if (window.gsap && window.ScrollTrigger) { fn(); }
-  else { setTimeout(() => waitForGSAP(fn), 50); }
+  if (window.gsap && window.ScrollTrigger) fn();
+  else setTimeout(() => waitForGSAP(fn), 50);
 }
 
-
-/* ════════════════════════════════════════════════
-   § GSAP ANIMATION SUITE
-════════════════════════════════════════════════ */
 waitForGSAP(function() {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-
-  /* ── LOADER ──────────────────────────────────
-     Simulates page load with a progress bar.
-     Animates the letter characters out individually
-     (staggered slide-up) then fades the overlay.
-     Once gone, initHero() fires the hero entrance.
-  ─────────────────────────────────────────────── */
+  /* Loader */
   const loaderBar   = document.getElementById('loaderBar');
   const loaderCount = document.getElementById('loaderCount');
   const loader      = document.getElementById('loader');
@@ -2554,9 +1924,8 @@ waitForGSAP(function() {
   let pct = 0;
   const interval = setInterval(() => {
     pct = Math.min(pct + Math.random() * 14, 100);
-    loaderBar.style.width     = pct + '%';
-    loaderCount.textContent   = Math.floor(pct) + '%';
-
+    loaderBar.style.width   = pct + '%';
+    loaderCount.textContent = Math.floor(pct) + '%';
     if (pct >= 100) {
       clearInterval(interval);
       const chars = loader.querySelectorAll('.loader-name span');
@@ -2568,114 +1937,69 @@ waitForGSAP(function() {
     }
   }, 40);
 
-
-  /* ── HERO ENTRANCE ───────────────────────────
-     Staggered sequence:
-     1. Name words slide up from below their clip mask
-     2. Eyebrow label fades in
-     3. Tagline fades in
-     4. CTA buttons fade in
-     5. Scroll indicator fades in
-
-     After entrance, name + portrait move on a parallax
-     track (portrait moves faster = depth illusion).
-  ─────────────────────────────────────────────── */
+  /* Hero entrance */
   function initHero() {
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-    tl.to('#heroName .word span', { y: '0%', duration: 1.2, stagger: 0.15 })
-      .to('#heroEyebrow', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
-      .to('#heroTagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-      .to('#heroCtaRow',  { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
-      .to('#heroScroll',  { opacity: 1, duration: 0.8 }, '-=0.2');
+    tl.to('#heroName .word span',  { y: '0%', duration: 1.2, stagger: 0.15 })
+      .to('#heroEyebrow',          { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+      .to('#heroTagline',          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+      .to('#heroAvailability',     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.4')
+      .to('#heroCtaRow',           { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+      .to('#heroScroll',           { opacity: 1, duration: 0.8 }, '-=0.2');
 
-    /* Parallax: portrait moves 25% of scroll distance (faster, feels closer) */
+    /* Portrait parallax */
     gsap.to('#heroPortrait', {
       y: '25%', ease: 'none',
       scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
     });
-
-    /* Name moves 15% of scroll distance (slower, feels further back) */
     gsap.to('#heroName', {
       y: '15%', ease: 'none',
       scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 }
     });
   }
 
-
-  /* ── NEWSPAPER UNFOLD ────────────────────────
-     The newspaper starts folded away: rotateX(-85deg) + scaleY(0.2).
-     As the About section enters the viewport, it unfolds to flat.
-     When scrolling past, it folds forward and exits.
-     When scrolling back up, it unfolds again cleanly.
-
-     The perspective CSS on .newspaper-wrap parent is what makes
-     rotateX look like a physical 3D fold rather than a squash.
-  ─────────────────────────────────────────────── */
+  /* Newspaper unfold */
   ScrollTrigger.create({
     trigger: '#about',
-    start: 'top 80%',
-    end: 'bottom 20%',
+    start: 'top 80%', end: 'bottom 20%',
     onEnter:     () => gsap.to('#newspaper', { rotateX: 0, scaleY: 1, opacity: 1, duration: 1.4, ease: 'power3.out' }),
     onLeave:     () => gsap.to('#newspaper', { rotateX: 85, scaleY: 0.1, opacity: 0, duration: 1, ease: 'power3.in' }),
     onEnterBack: () => gsap.to('#newspaper', { rotateX: 0, scaleY: 1, opacity: 1, duration: 1.2, ease: 'power3.out' }),
     onLeaveBack: () => gsap.to('#newspaper', { rotateX: -85, scaleY: 0.2, opacity: 0, duration: 1, ease: 'power3.in' })
   });
 
-
-  /* ── TIMELINE ITEMS ──────────────────────────
-     Items slide in from alternating sides as they
-     enter the viewport. Reversed when scrolling back up.
-  ─────────────────────────────────────────────── */
+  /* Timeline items */
   document.querySelectorAll('.timeline-item').forEach((item, i) => {
     const fromLeft = i % 2 === 0;
     gsap.fromTo(item,
       { opacity: 0, x: fromLeft ? -60 : 60, y: 30 },
       { opacity: 1, x: 0, y: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: item, start: 'top 80%', toggleActions: 'play none none reverse' }
-      }
+        scrollTrigger: { trigger: item, start: 'top 80%', toggleActions: 'play none none reverse' } }
     );
   });
 
-
-  /* ── CASE FILES ──────────────────────────────
-     Each case file rises and de-tilts as it enters
-     the viewport. The rotationX adds a subtle 3D
-     lift — like picking up a physical folder.
-  ─────────────────────────────────────────────── */
-  document.querySelectorAll('.case-file').forEach((file) => {
+  /* Case files */
+  document.querySelectorAll('.case-file').forEach(file => {
     gsap.fromTo(file,
       { opacity: 0, y: 60, rotationX: -8 },
       { opacity: 1, y: 0, rotationX: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: file, start: 'top 85%', toggleActions: 'play none none reverse' }
-      }
+        scrollTrigger: { trigger: file, start: 'top 85%', toggleActions: 'play none none reverse' } }
     );
   });
 
-
-  /* ── SERVICE CARDS ───────────────────────────
-     Cards stagger in pairs as the grid enters view.
-     delay: (i % 2) * 0.15 means left/right cards
-     in each row animate in sequence, not simultaneously.
-  ─────────────────────────────────────────────── */
+  /* Service cards */
   document.querySelectorAll('.service-card').forEach((card, i) => {
     gsap.fromTo(card,
       { opacity: 0, y: 50 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
         delay: (i % 2) * 0.15,
-        scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
-      }
+        scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' } }
     );
   });
 
-
-  /* ── CONTACT ENTRANCE ────────────────────────
-     Headline animates up once. CTAs follow with delay.
-     once: true prevents re-animation on scroll-back.
-  ─────────────────────────────────────────────── */
+  /* Contact */
   ScrollTrigger.create({
-    trigger: '#contact',
-    start: 'top 70%',
-    once: true,
+    trigger: '#contact', start: 'top 70%', once: true,
     onEnter: () => {
       gsap.from('.contact-headline', { y: 60, opacity: 0, duration: 1, ease: 'power3.out' });
       gsap.from('.contact-subtext, .contact-cta', {
@@ -2684,11 +2008,7 @@ waitForGSAP(function() {
     }
   });
 
-
-  /* ── SECTION HEADERS ─────────────────────────
-     Each section header's children (eyebrow + title)
-     stagger-fade upward when the header enters view.
-  ─────────────────────────────────────────────── */
+  /* Section headers */
   document.querySelectorAll('.section-header').forEach(header => {
     gsap.from(header.children, {
       opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', stagger: 0.15,
@@ -2696,120 +2016,36 @@ waitForGSAP(function() {
     });
   });
 
-
-  /* ── SMOOTH ANCHOR SCROLLING ─────────────────
-     CRITICAL FIX: This handler is attached IMMEDIATELY
-     (not inside waitForGSAP) so it works the instant
-     the page is interactive, regardless of GSAP load state.
-
-     Strategy:
-     - If GSAP + ScrollToPlugin are ready → use GSAP (premium smooth scroll)
-     - If not yet ready → use native scrollIntoView as fallback
-     Both paths prevent the default hash-jump behaviour.
-
-     Also closes the mobile menu before scrolling.
-
-     offsetY: 90 = fixed nav height compensation.
-  ─────────────────────────────────────────────── */
-  function scrollToSection(href) {
-    if (href === '#' || !href.startsWith('#')) return;
-    const target = document.querySelector(href);
-    if (!target) return;
-
-    /* Close mobile menu */
-    document.body.classList.remove('nav-open');
-    const hamburger = document.getElementById('navHamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
-    if (mobileMenu) mobileMenu.setAttribute('aria-hidden', 'true');
-
-    /* Use GSAP if available, native scroll otherwise */
-    if (window.gsap && window.ScrollToPlugin) {
-      gsap.to(window, {
-        duration: 1.1,
-        scrollTo: { y: target, offsetY: 90 },
-        ease: 'power3.inOut'
-      });
-    } else {
-      const top = target.getBoundingClientRect().top + window.scrollY - 90;
-      window.scrollTo({ top, behavior: 'auto' });
-    }
-  }
-
-  /* Attach to every anchor link immediately */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      scrollToSection(this.getAttribute('href'));
-    });
-  });
-
-
-  /* ── NAV SCROLL STATE ────────────────────────
-     Adds .nav-scrolled class to <nav> when user scrolls
-     past 60px, triggering the frosted glass background.
-  ─────────────────────────────────────────────── */
-  (function initNavScroll() {
-    const nav = document.getElementById('mainNav');
-    if (!nav) return;
-    function updateNav() {
+  /* Nav scroll state */
+  const nav = document.getElementById('mainNav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
       nav.classList.toggle('nav-scrolled', window.scrollY > 60);
-    }
-    window.addEventListener('scroll', updateNav, { passive: true });
-    updateNav();
-  })();
-
-
-  /* ── START SCROLL INDICATOR ANIMATION ────────
-     animation-play-state is paused by default so it
-     doesn't animate during the loader. Start after entrance.
-  ─────────────────────────────────────────────── */
-  const scrollIndicator = document.getElementById('heroScroll');
-  if (scrollIndicator) {
-    setTimeout(() => {
-      scrollIndicator.style.animationPlayState = 'running';
-    }, 2500);
+    }, { passive: true });
   }
 
-}); /* end waitForGSAP */
+  /* Active nav highlight */
+  const sections = ['hero', 'about', 'timeline', 'work', 'services', 'contact'];
+  const navAnchors = document.querySelectorAll('.nav-links a');
 
+  function updateActiveNav() {
+    let current = 'hero';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 120) current = id;
+    });
+    navAnchors.forEach(a => {
+      a.classList.toggle('nav-active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav();
 
-/* ══════════════════════════════════════════════════
-   ANCHOR SCROLLING — EARLY ATTACHMENT
-   ──────────────────────────────────────────────────
-   Attached here OUTSIDE waitForGSAP so nav links work
-   immediately when the DOM is ready, before GSAP loads.
-   If GSAP loads later, its own handler replaces this one
-   via the same scrollToSection() function which checks
-   window.gsap availability each time it's called.
-
-   This fixes the race condition: previously, clicking
-   "About" before GSAP loaded did nothing because the
-   handler hadn't been attached yet.
-══════════════════════════════════════════════════ */
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const href = this.getAttribute('href');
-    if (!href || href === '#') return;
-    const target = document.querySelector(href);
-    if (!target) return;
-
-    /* Close mobile menu */
-    document.body.classList.remove('nav-open');
-    const hb = document.getElementById('navHamburger');
-    const mm = document.getElementById('mobileMenu');
-    if (hb) hb.setAttribute('aria-expanded', 'false');
-    if (mm) mm.setAttribute('aria-hidden', 'true');
-
-    /* Scroll with nav offset */
-    if (window.gsap && window.ScrollToPlugin) {
-      gsap.to(window, { duration: 1.1, scrollTo: { y: target, offsetY: 90 }, ease: 'power3.inOut' });
-    } else {
-      const top = target.getBoundingClientRect().top + window.scrollY - 90;
-      window.scrollTo({ top });
-    }
-  });
+  /* Start scroll indicator animation */
+  setTimeout(() => {
+    const ind = document.getElementById('heroScroll');
+    if (ind) ind.style.animationPlayState = 'running';
+  }, 2500);
 });
 </script>
 
