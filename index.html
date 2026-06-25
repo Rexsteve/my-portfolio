@@ -1628,7 +1628,7 @@ const journeyData = [
 const workData = [
   {
     id: 'file1', number: '01',
-    image: 'images/event-management-system.jpg',
+    image: 'localhost_hmis_dashboard.php.png',
     label: 'HOSPITALITY INFORMATION MANAGEMENT SYSTEM',
     context: 'Team Project — Maseno University, 2026',
     title: 'Hospitality Information Management System',
@@ -1699,61 +1699,6 @@ function renderWork() {
   const stack = document.getElementById('caseFilesStack');
   if (!stack) return;
   stack.innerHTML = workData.map(project => {
-
-    /* UNUSED: feedback template — feedback branch renders correctly but all
-       project.feedback values are currently null, so this block is never
-       executed with current data. Kept so it activates automatically if
-       feedback is added to a project entry in workData.
-    const feedback = project.feedback ? `
-      <blockquote class="client-feedback">
-        "${project.feedback.quote}"
-        <cite class="feedback-author">— ${project.feedback.author}</cite>
-      </blockquote>` : '';
-    */
-
-    /* UNUSED: mock browser screenshot template — replaced by real project
-       images (Task 2). Kept here for reference in case the mock UI is
-       ever needed again (e.g. for projects without a real screenshot).
-    const mockScreenshots = `
-      <div class="case-screenshots" aria-label="Project visual">
-        <div class="screenshot-frame screenshot-frame-tall">
-          <div class="browser-chrome" aria-hidden="true">
-            <div class="browser-dot bd-red"></div>
-            <div class="browser-dot bd-yellow"></div>
-            <div class="browser-dot bd-green"></div>
-          </div>
-          <div class="browser-content">
-            <div class="mock-ui" aria-hidden="true">
-              <div class="mock-header"></div>
-              <div class="mock-hero-block"></div>
-              <div class="mock-cards">
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:0.75rem;">
-          <div class="screenshot-frame" style="flex:1">
-            <div class="browser-content" style="background:linear-gradient(135deg,#1a2030,#2a3050);">
-              <div style="width:70%;height:60%;background:rgba(201,168,76,0.08);border-radius:2px;"></div>
-            </div>
-          </div>
-          <div class="screenshot-frame" style="flex:1">
-            <div class="browser-content" style="background:linear-gradient(135deg,#201a2a,#2a1a30);">
-              <div style="width:70%;height:60%;background:rgba(139,26,26,0.1);border-radius:2px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    */
-
-    /* TASK 2: Real project image — responsive, aspect-ratio-locked container.
-       object-fit: cover ensures the image fills the frame without stretching.
-       object-position: top center keeps the most informative part visible.
-       lazy loading defers off-screen images for performance.
-    */
     const projectImage = `
       <div class="project-image-container">
         <img
